@@ -1,0 +1,11 @@
+{
+  "volar.codeLens.pugTools": false,
+  "vetur.validation.script": false,
+  "vetur.validation.template": false,
+  "vetur.validation.style": false,
+  "tailwindCSS.includeLanguages": {
+    "plaintext": "html"
+  },
+  "tailwindCSS.emmetCompletions": true,
+  "css.lint.unknownAtRules": "ignore"
+}
