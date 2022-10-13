@@ -73,7 +73,7 @@ import { Column } from './Columns';
 import { defineComponent } from 'vue';
 import TableOpts from './TableOpts';
 import FlameTable from './FlameTable';
-import ModalVue from '../Modal.vue';
+import ModalVue from './../components/default/Modal.vue';
 import Paginator from './Paginator.vue';
 type Class<T> = new (...args: any[]) => T;
 

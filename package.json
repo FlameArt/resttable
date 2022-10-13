@@ -1,6 +1,7 @@
 {
-  "name": "appname",
-  "version": "1.0.8",
+  "name": "resttable",
+  "version": "1.0.0",
+  "main": "./src/plugin.ts",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
