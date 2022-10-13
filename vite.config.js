@@ -18,5 +18,8 @@ export default defineConfig({
   },
   "preview": {
     "port": 3000
+  },
+  "optimizeDeps": {
+    include: ['lodash.merge', 'lodash.isequal', 'lodash.clonedeep']
   }
 })
