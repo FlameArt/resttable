@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
       "name": "Chrome",
       "url": "http://localhost:3000",
@@ -12,7 +12,7 @@
       "userDataDir": "${execPath}/../chrome-debug-default-profile/"
     },
     {
-      "type": "pwa-msedge",
+      "type": "msedge",
       "request": "launch",
       "name": "VSCode Edge",
       "url": "http://localhost:3000",

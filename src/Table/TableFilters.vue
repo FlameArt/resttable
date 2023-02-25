@@ -6,7 +6,7 @@
 import { onMounted, reactive, ref, defineProps } from '@vue/runtime-core'; import type { Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST from "flamerest"
 
 // Иконки
-import { XCircleIcon } from '@icons/solid'
+import { XCircleIcon } from '@icons/24/solid'
 import { TableFilter } from './TableOpts.js';
 
 // Глобальное хранилище и роуты
@@ -29,5 +29,4 @@ onMounted(async () => {
 
 </script>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

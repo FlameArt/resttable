@@ -3,7 +3,7 @@ import { Authorized } from 'flamerest'
 
 export const storeFile = defineStore('store', {
   state: () => {
-    return { 
+    return {
       User: {
         id: 0,
         role: 'Guest',
@@ -13,6 +13,11 @@ export const storeFile = defineStore('store', {
         avatar: '',
         isLoaded: false
       },
+
+      Table: {
+        rows: {}
+      }
+
     }
   },
   // could also be defined as

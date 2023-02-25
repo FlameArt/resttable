@@ -4,7 +4,7 @@
   // "ДОБАВИТЬ" И ЧИСЛО ЗАПИСЕЙ
   .flex.items-center.justify-between
     slot(name="defaultButtons")
-      .flex.cursor-pointer.hover:bg-blue-700.justify-center.items-center.text-white.block.bg-blue-600.hover:bg-blue-700.focus:ring-4.focus:ring-blue-200.font-medium.rounded.text-sm.px-4.text-center.dark:focus:ring-blue-900(v-show="$props.opts?.Add.can" @click="add()")
+      .flex.cursor-pointer.justify-center.items-center.text-white.block.bg-blue-600.font-medium.rounded.text-sm.px-4.text-center(v-show="$props.opts?.Add.can" @click="add()" class="hover:bg-blue-700 .focus:ring-4.focus:ring-blue-200.dark:focus:ring-blue-900")
         div.text-xl +
         div.ml-2 {{ $props.opts?.Add.buttonTitle }}
     slot(name="otherButtons")
@@ -24,8 +24,8 @@
 
     // СТРОКИ
     .table-row-group
-      .table-row.hover:bg-slate-100.cursor-pointer(v-for="row in (Table.Rows.rows)")
-        .table-cell.border-r.last:border-r-0.border-r-slate-100.px-2.last:pr-0(v-for="column in Table.columns" v-show="column.Table.isShow" @click="column.Table.click(row, column)")
+      .table-row.cursor-pointer(v-for="row in (Table.Rows.rows)" class="hover:bg-slate-100")
+        .table-cell.border-r.border-r-slate-100.px-2(v-for="column in Table.columns" v-show="column.Table.isShow" @click="column.Table.click(row, column)" class="last:border-r-0 last:pr-0")
           span {{ column.Table.value(row, column) }}
         .table-cell.border-r.border-r-slate-100.px-2.text-center(v-if="opts.Edit.can")
           button.px-2.py-1.bg-green-600.text-white.my-1(@click="edit(row)") Изменить
@@ -56,8 +56,8 @@ ModalVue(ref="FlameTableModal")
 
       // КНОПКИ СОХРАНЕНИЯ
       .flex.w-full.mt-3.mb-2.justify-between.items-center
-        .cursor-pointer.ml-2.text-lg.py-2.hover:bg-gray-500.text-white.block.bg-gray-400.hover:bg-blue-700.focus:ring-4.focus:ring-blue-200.font-medium.rounded.text-sm.px-4.text-center.dark:focus:ring-blue-900(v-show="$props.opts?.Add.can" @click="Table.OpenedRow = null; FlameTableModal?.close()") Отмена
-        .cursor-pointer.ml-2.text-lg.py-2.mr-3.hover:bg-blue-700.text-white.block.bg-blue-600.hover:bg-blue-700.focus:ring-4.focus:ring-blue-200.font-medium.rounded.text-sm.px-4.text-center.dark:focus:ring-blue-900(@click="SaveTable()") {{ Table.mode === 'add' ? 'Добавить' : 'Сохранить' }}
+        .cursor-pointer.ml-2.text-lg.py-2.text-white.block.bg-gray-400.font-medium.rounded.text-sm.px-4.text-center(v-show="$props.opts?.Add.can" @click="Table.OpenedRow = null; FlameTableModal?.close()" class="hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900") Отмена
+        .cursor-pointer.ml-2.text-lg.py-2.mr-3.text-white.block.bg-blue-600.font-medium.rounded.text-sm.px-4.text-center(@click="SaveTable()" class="hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900") {{ Table.mode === 'add' ? 'Добавить' : 'Сохранить' }}
 
 
   
@@ -67,7 +67,7 @@ ModalVue(ref="FlameTableModal")
 import { onMounted, reactive, ref, defineProps } from '@vue/runtime-core'; import type { Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST, { Rows } from "flamerest"
 
 // Иконки
-import { XCircleIcon } from '@icons/solid'
+import { XCircleIcon } from '@icons/24/solid'
 import { computed } from '@vue/reactivity';
 import { Column } from './Columns';
 import { defineComponent } from 'vue';
@@ -186,6 +186,4 @@ export default defineComponent({
 
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>
