@@ -2,7 +2,7 @@ import { Column } from './Columns';
 import { Rows, SavedObject } from 'flamerest';
 import TableOpts from "./TableOpts";
 import { reactive, UnwrapRef } from 'vue';
-import merge from 'lodash.merge';
+import merge from 'lodash-es/merge'
 
 // Подгрузчик типа класса
 type Class<T> = new (...args: any[]) => T

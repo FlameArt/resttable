@@ -1,6 +1,6 @@
 import { Column, IColumn } from './Columns';
 
-import merge from 'lodash.merge'
+import merge from 'lodash-es/merge'
 import FlameTable from './FlameTable';
 
 export default class TableOpts {
