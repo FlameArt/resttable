@@ -165,8 +165,17 @@ export default defineComponent({
     const getSelector = (arr: any, selectorKey: any, selectorVal: any) => {
       if (Array.isArray(arr)) return [selectorVal, selectorVal];
       // TODO: тут загрузка объекта должна быть
+      // сейчас объект перерабатывается где-то в map и теряет ключи и значения
       if (typeof arr === 'object' && arr !== null) return [selectorKey, selectorVal]
       return [selectorKey, selectorVal]
+    }
+
+    // Автозагрузка первичной версии
+    if (props.opts.autoload === true) {
+      const tModel = (props.model as any)
+      tModel.all().then((r: any) => {
+        Table.load(r);
+      })
     }
 
     return {

@@ -6,6 +6,11 @@ import FlameTable from './FlameTable';
 export default class TableOpts {
 
   /**
+   * Нужна ли автозагрузка
+   */
+  public autoload: boolean = true;
+
+  /**
    * Колонки
    */
   public columnsOpts: { [key: string]: IColumn } = {};
