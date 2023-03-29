@@ -15,6 +15,12 @@ export default class TableOpts {
    */
   public columnsOpts: { [key: string]: IColumn } = {};
 
+  /**
+   * Параметры прогрузки
+   */
+  public LoadParams = {} as any;
+
+
   public set(ColumnName: string, mergingOpts: IColumn) {
     // TODO: ЕСТЬ ОШИБКА???
     if (this.columnsOpts[ColumnName] === undefined) this.columnsOpts[ColumnName] = new Column as any

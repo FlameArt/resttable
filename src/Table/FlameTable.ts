@@ -49,11 +49,6 @@ export default class FlameTable<T> {
   })
 
   /**
-   * Параметры прогрузки
-   */
-  public LoadParams = {} as any;
-
-  /**
    * Открытая в попапе строка
    */
   public OpenedRow: any = null;
@@ -124,9 +119,9 @@ export default class FlameTable<T> {
    */
   public async update(SaveLoadParams: any = null) {
 
-    if (SaveLoadParams !== null) this.LoadParams = SaveLoadParams;
+    if (SaveLoadParams !== null) this.opts.LoadParams = SaveLoadParams;
 
-    const rows: Rows<T> = await (this.model as any).constructor.all(Object.assign(this.LoadParams, { page: this.Pager.page, perPage: this.Pager.perPage }));
+    const rows: Rows<T> = await (this.model as any).constructor.all(Object.assign(this.opts.LoadParams, { page: this.Pager.page, perPage: this.Pager.perPage }));
 
     this.load(rows);
 
