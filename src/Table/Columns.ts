@@ -108,7 +108,7 @@ export class Column implements IColumn {
     // string - обычная строка или селектор строк
     // text - text area
     // button - кнопка
-    popupType: 'string' as "string" | "text" | "button" | "date" | "selector",
+    popupType: 'string' as "string" | "text" | "button" | "date" | "selector" | "image" | "file",
 
     // Текст ошибки добавления/обновления
     errorMessage: '',
@@ -227,7 +227,7 @@ export interface IColumn {
   Popup?: {
 
     // Тут привязка к реальным данным
-    model?: string,
+    model?: any,
 
     // Заголовок поля в попапе
     title?: string,
@@ -259,7 +259,7 @@ export interface IColumn {
     // string - обычная строка или селектор строк
     // text - text area
     // button - кнопка
-    popupType?: "string" | "text" | "button" | "date" | "selector",
+    popupType?: "string" | "text" | "button" | "date" | "selector" | "image" | "file",
 
     // Текст ошибки добавления/обновления
     errorMessage?: string,
