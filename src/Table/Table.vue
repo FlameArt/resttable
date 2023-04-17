@@ -93,6 +93,7 @@
               Table.columns[column].title !== '' ? Table.columns[column].title : Table.columns[column].name }}</div>
             <div class="text-xs text-slate-400">{{ Table.columns[column].Popup.desc }}</div>
           </div>
+
           <div
             v-if="Table.columns[column].Popup.popupType === 'string' || Table.columns[column].Popup.popupType === 'text'"
             class="flex-1 mr-5 w-full flex flex-col self-stretch">
@@ -101,10 +102,12 @@
               :disabled="!Table.columns[column].Popup.isEnabled"
               :placeholder="Table.columns[column].Popup.placeholder !== '' ? Table.columns[column].Popup.placeholder : Table.columns[column].title !== '' ? Table.columns[column].title : Table.columns[column].name">
           </div>
+
           <div v-if="Table.columns[column].Popup.popupType === 'date'"
             class="flex-1 mr-5 w-full flex flex-col self-stretch">
             <Datepicker v-model="Table.columns[column].Popup.model" :auto-apply="true" />
           </div>
+
           <div v-if="Table.columns[column].Popup.popupType === 'selector'"
             class="flex-1 mr-5 w-full flex flex-col self-stretch"><select v-model="Table.columns[column].Popup.model"
               class="h-full self-stretch py-1 px-2 w-full outline-none border border-slate-100">
@@ -112,18 +115,53 @@
                 :key="'sel_' + selectorKey"
                 :value="getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[1]">{{
                   getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[0] }}</option>
-            </select></div>
+            </select>
+          </div>
+
+          <!-- КАРТИНКА -->
           <div v-if="Table.columns[column].Popup.popupType === 'image'"
             class="flex-1 border border-slate-100 mr-5 w-full flex self-stretch">
-            <div class="flex-1"><img :src="fileGetData(Table.columns[column].Popup.model)"></div><!-- Загрузчик--><label
-              :for="'cfile_' + column"><svg class="my-auto cursor-pointer" width="24" height="24" viewbox="0 0 24 24"
-                fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="flex-1">
+              <img class="max-w-[200px]" :src="fileGetData(Table.columns[column].Popup.model, true)">
+            </div>
+
+            <!-- Загрузчик-->
+            <label :for="'cfile_' + column">
+
+              <svg class="my-auto cursor-pointer" width="24" height="24" viewbox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd"
                   d="M11.4697 2.46967C11.7626 2.17678 12.2374 2.17678 12.5303 2.46967L17.0303 6.96967C17.3232 7.26256 17.3232 7.73744 17.0303 8.03033C16.7374 8.32322 16.2626 8.32322 15.9697 8.03033L12.75 4.81066L12.75 16.5C12.75 16.9142 12.4142 17.25 12 17.25C11.5858 17.25 11.25 16.9142 11.25 16.5L11.25 4.81066L8.03033 8.03033C7.73744 8.32322 7.26256 8.32322 6.96967 8.03033C6.67678 7.73744 6.67678 7.26256 6.96967 6.96967L11.4697 2.46967ZM3 15.75C3.41421 15.75 3.75 16.0858 3.75 16.5V18.75C3.75 19.5784 4.42157 20.25 5.25 20.25H18.75C19.5784 20.25 20.25 19.5784 20.25 18.75V16.5C20.25 16.0858 20.5858 15.75 21 15.75C21.4142 15.75 21.75 16.0858 21.75 16.5V18.75C21.75 20.4069 20.4069 21.75 18.75 21.75H5.25C3.59315 21.75 2.25 20.4069 2.25 18.75V16.5C2.25 16.0858 2.58579 15.75 3 15.75Z"
                   fill="#0F172A" />
-              </svg><input class="hidden" :name="'cfile_' + column" type="file"
-                @change="fileUpdated(column, $event)"></label>
+              </svg>
+
+              <input class="hidden" :name="'cfile_' + column" type="file" @change="fileUpdated(column, $event)">
+
+            </label>
           </div>
+
+          <!-- ФАЙЛЫ -->
+          <div v-if="Table.columns[column].Popup.popupType === 'file'"
+            class="flex-1 border border-slate-100 mr-5 w-full flex self-stretch">
+            <div class="flex-1">
+              {{ fileGetData(Table.columns[column].Popup.model, false).name }}
+            </div>
+
+            <!-- Загрузчик-->
+            <label :for="'cfile_' + column">
+
+              <svg class="my-auto cursor-pointer" width="24" height="24" viewbox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M11.4697 2.46967C11.7626 2.17678 12.2374 2.17678 12.5303 2.46967L17.0303 6.96967C17.3232 7.26256 17.3232 7.73744 17.0303 8.03033C16.7374 8.32322 16.2626 8.32322 15.9697 8.03033L12.75 4.81066L12.75 16.5C12.75 16.9142 12.4142 17.25 12 17.25C11.5858 17.25 11.25 16.9142 11.25 16.5L11.25 4.81066L8.03033 8.03033C7.73744 8.32322 7.26256 8.32322 6.96967 8.03033C6.67678 7.73744 6.67678 7.26256 6.96967 6.96967L11.4697 2.46967ZM3 15.75C3.41421 15.75 3.75 16.0858 3.75 16.5V18.75C3.75 19.5784 4.42157 20.25 5.25 20.25H18.75C19.5784 20.25 20.25 19.5784 20.25 18.75V16.5C20.25 16.0858 20.5858 15.75 21 15.75C21.4142 15.75 21.75 16.0858 21.75 16.5V18.75C21.75 20.4069 20.4069 21.75 18.75 21.75H5.25C3.59315 21.75 2.25 20.4069 2.25 18.75V16.5C2.25 16.0858 2.58579 15.75 3 15.75Z"
+                  fill="#0F172A" />
+              </svg>
+
+              <input class="hidden" :name="'cfile_' + column" type="file" @change="fileUpdated(column, $event)">
+
+            </label>
+          </div>
+
         </label>
 
         <!-- КНОПКИ СОХРАНЕНИЯ-->
@@ -291,13 +329,22 @@ export default defineComponent({
 
   },
   methods: {
-    fileGetData(thisArr: any) {
+    fileGetData(thisArr: any, getSource: boolean = true) {
+
+
 
       if (thisArr instanceof Array && thisArr.length > 0) {
-        if (typeof thisArr[0].data === 'string') return thisArr[0].data;
-        if (typeof thisArr[0].file === 'string') return thisArr[0].file;
+        // Получить строку с исходником
+        if (getSource) {
+          if (typeof thisArr[0].data === 'string') return thisArr[0].data;
+          if (typeof thisArr[0].file === 'string') return thisArr[0].file;
+          return "";
+        }
+        // Получить данные целиком
+        return thisArr[0]
       }
-      return "";
+
+      return null
 
     }
   },
