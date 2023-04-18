@@ -337,7 +337,7 @@ export default defineComponent({
         // Получить строку с исходником
         if (getSource) {
           if (typeof thisArr[0].data === 'string') return thisArr[0].data;
-          if (typeof thisArr[0].file === 'string') return thisArr[0].file;
+          if (typeof thisArr[0].file === 'string') return '/' + thisArr[0].file;
           return "";
         }
         // Получить данные целиком
