@@ -88,6 +88,8 @@
         <!-- КОЛОНКИ ТАБЛИЦЫ-->
         <label v-for="column in ColumnNames" v-show="Table.columns[column].Popup.isShow" :key="'c' + column"
           class="flex items-stretch justify-center w-full my-1 ml-2">
+
+          <!-- Заголовок -->
           <div class="text-left px-2 py-1 bg-slate-100" style="width: 110px">
             <div>{{ Table.columns[column].Popup.title !== '' ? Table.columns[column].Popup.title === '' :
               Table.columns[column].title !== '' ? Table.columns[column].title : Table.columns[column].name }}</div>
@@ -143,8 +145,9 @@
           <!-- ФАЙЛЫ -->
           <div v-if="Table.columns[column].Popup.popupType === 'file'"
             class="flex-1 border border-slate-100 mr-5 w-full flex self-stretch">
+
             <div class="flex-1">
-              {{ fileGetData(Table.columns[column].Popup.model, false).name }}
+              {{ fileGetData(Table.columns[column].Popup.model, false)?.name }}
             </div>
 
             <!-- Загрузчик-->
@@ -337,7 +340,7 @@ export default defineComponent({
         // Получить строку с исходником
         if (getSource) {
           if (typeof thisArr[0].data === 'string') return thisArr[0].data;
-          if (typeof thisArr[0].file === 'string') return '/' + thisArr[0].file;
+          if (typeof thisArr[0].file === 'string') return REST.SERVER + "/" + thisArr[0].file;
           return "";
         }
         // Получить данные целиком
