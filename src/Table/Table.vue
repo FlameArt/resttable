@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-0">
+  <div class="mt-0  overflow-x-scroll">
 
     <!-- "ДОБАВИТЬ" И ЧИСЛО ЗАПИСЕЙ-->
     <div class="flex items-center justify-between">
@@ -26,7 +26,7 @@
     </div>
 
     <!-- ТАБЛИЦА-->
-    <div class="mt-2 table w-full">
+    <div class="mt-2 table w-full ">
 
       <!-- ЗАГОЛОВКИ СТОЛБЦОВ-->
       <div class="table-header-group">
@@ -147,7 +147,7 @@
             class="flex-1 border border-slate-100 mr-5 w-full flex self-stretch">
 
             <div class="flex-1">
-              {{ fileGetData(Table.columns[column].Popup.model, false)?.name }}
+              {{ getFileName(Table.columns[column].Popup.model) }}
             </div>
 
             <!-- Загрузчик-->
@@ -176,7 +176,7 @@
           </div>
           <div
             class="cursor-pointer ml-2 text-lg py-2 mr-3 text-white block bg-blue-600 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
-            @click="SaveTable()">
+            @click=" SaveTable() ">
             {{ Table.mode === 'add' ? 'Добавить' : 'Сохранить' }}
           </div>
         </div>
@@ -349,6 +349,21 @@ export default defineComponent({
 
       return null
 
+    },
+
+    getFileName(fileModel: any) {
+      const res = this.fileGetData(fileModel, false)
+      if (res?.name) {
+        if (typeof res.name === 'string' && res.name !== '') {
+          return res.name;
+        }
+        else {
+          if (res.file) {
+            const splitted = res.file.split('.');
+            return 'File.' + splitted[splitted.length - 1];
+          }
+        }
+      }
     }
   },
 
