@@ -2,6 +2,7 @@ import { Column, IColumn } from './Columns';
 
 import merge from 'lodash-es/merge'
 import FlameTable from './FlameTable';
+import ITableLoadParams from './TableLoadParams';
 
 export default class TableOpts {
 
@@ -18,7 +19,7 @@ export default class TableOpts {
   /**
    * Параметры прогрузки
    */
-  public LoadParams = {} as any;
+  public LoadParams: ITableLoadParams = {};
 
 
   public set(ColumnName: string, mergingOpts: IColumn) {

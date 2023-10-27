@@ -3,6 +3,7 @@ import { Rows, SavedObject } from 'flamerest';
 import TableOpts from "./TableOpts";
 import { reactive, UnwrapRef } from 'vue';
 import merge from 'lodash-es/merge'
+import ITableLoadParams from './TableLoadParams';
 
 // Подгрузчик типа класса
 type Class<T> = new (...args: any[]) => T
@@ -121,12 +122,64 @@ export default class FlameTable<T> {
 
     if (SaveLoadParams !== null) this.opts.LoadParams = SaveLoadParams;
 
-    const rows: Rows<T> = await (this.model as any).constructor.all(Object.assign(this.opts.LoadParams, { page: this.Pager.page, perPage: this.Pager.perPage }));
+    // Дополняем загрузочные параметры фильтрами
+    const filters = this.applyFiltersParams();
+
+    const rows: Rows<T> = await (this.model as any).constructor.all(merge({}, this.opts.LoadParams, filters, { page: this.Pager.page, perPage: this.Pager.perPage }));
 
     this.load(rows);
 
   }
 
+  public applyFiltersParams() {
+    const customFilters: ITableLoadParams = {
+      where: {}
+    };
+    for (const key in this.columns) {
+      const el = this.columns[key].Filter;
+      switch (el.type) {
+
+        // Частичное совпадение
+        case 'text':
+
+          if (el.valueString.trim() === '') continue;
+          customFilters.where[key] = ['LIKE', key, el.valueString];
+          break;
+
+        // Фуллтекстовый поиск
+        case 'fulltext':
+
+          if (el.valueString.trim() === '') continue;
+          customFilters.where[key] = ['FULLTEXT', key, el.valueString];
+          break;
+
+        // Точное совпадение
+        case 'fixed':
+        case 'date':
+        case 'selector':
+
+          if (el.valueString.trim() === '') continue;
+          customFilters.where[key] = el.valueString;
+
+          break;
+
+        // ДИАПАЗОН
+        case 'number':
+        case 'daterange':
+
+          if (el.valueRange.from.trim() !== '')
+            customFilters.where[key] = ['>=', key, el.valueRange.from];
+          if (el.valueRange.to.trim() !== '')
+            customFilters.where[key] = ['<=', key, el.valueRange.to];
+
+          break;
+
+        default:
+          alert('Unknown table filter type');
+      }
+    }
+    return customFilters;
+  }
 
 
   public async add(): Promise<SavedObject<T> | null> {

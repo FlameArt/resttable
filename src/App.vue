@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { onMounted, reactive, defineProps } from '@vue/runtime-core'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST from "flamerest"
 import Table from './Table/Table.vue';
+import { ref } from 'vue';
+import Model from '@models/Testtable';
+import TableOpts from './Table/TableOpts';
+
 const store = storeFile(), router = useRouter(), route = useRoute();
 
 let notRedirectOnAuthList = [
@@ -11,23 +15,23 @@ let notRedirectOnAuthList = [
 ];
 
 onMounted(() => {
-  REST.auth().then((res) => {
-    store.authUser(res);
-    store.User.isLoaded = true;
-    if (res.isAuthorized === false) {
-      if (!notRedirectOnAuthList.includes(route.name?.toString() ?? "")) {
-        router.push({ name: "Auth" });
-      }
-    } else {
-      // Load state
-      // store.projects = REST.get("projects");
-    }
-  });
+
 });
+
+const TableComponent = ref<InstanceType<typeof Table>>();
+const opts = new TableOpts;
+opts.Add.can = true;
+opts.Remove.can = true;
+
+// Загружаем первичные данные
+Model.all({ sort: ['id'] }).then(r =>
+  TableComponent.value?.Table.load(r)
+)
+
 </script>
 
 <template lang="pug">
-Table
+Table(:model="Model", :opts="opts")
 </template>
 
 <style>

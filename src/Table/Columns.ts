@@ -54,6 +54,32 @@ export class Column implements IColumn {
   }
 
   /**
+   * Это related данные для всех селекторов и внутри таблицы
+   */
+  public Selector = {
+
+    /**
+     * Загрузчик значений
+     * @returns Array
+     */
+    loader: () => [],
+
+    /**
+     * Здесь список готовых значений
+     */
+    values: [],
+
+    /**
+     * Здесь можно определить кастомный лоадер при поиске
+     * @param row 
+     * @param col 
+     * @returns 
+     */
+    value: (row: any, col: string) => row[col]
+
+  };
+
+  /**
    * Настройки фильтра
    */
   public Filter = {
@@ -64,6 +90,14 @@ export class Column implements IColumn {
     // Значение
     valueString: "",
     valueRange: { from: '', to: '' },
+
+    // Тип фильтра
+    type: 'text' as "text" | "fixed" | "fulltext" | "number" | "date" | "daterange" | "selector",
+
+    /**
+     * Список значений под выбор
+     */
+    select: [],
 
     // Минимальное число символов в строке фильтра, после которого будет произведён запрос
     filterMinSymbolsRequest: 0,
@@ -210,6 +244,9 @@ export interface IColumn {
 
     // Показываем ли фильтр
     isShow?: boolean,
+
+    // Тип фильтра
+    type: "text" | "fixed" | "fulltext" | "number" | "date" | "daterange" | "selector",
 
     // Значение
     valueString?: string,

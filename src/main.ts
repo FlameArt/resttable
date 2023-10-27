@@ -6,12 +6,14 @@ import router from "./router";
 
 import 'vue-universal-modal/dist/index.css'
 import VueUniversalModal from 'vue-universal-modal'
+import REST from 'flamerest';
 
 
+REST.SERVER = 'http://testrest';
 
 
 createApp(App)
-.use(createPinia())
-.use(router)
-.use(VueUniversalModal, {teleportTarget: '#my-modals',modalComponent: 'CustomModal'})
-.mount('#app')
+   .use(createPinia())
+   .use(router)
+   .use(VueUniversalModal, { teleportTarget: '#my-modals', modalComponent: 'CustomModal' })
+   .mount('#app')

@@ -1,6 +1,9 @@
 <template>
   <div class="mt-0  overflow-x-scroll">
 
+    <!-- ФИЛЬТРЫ -->
+    <TableFilters :columns="Table.columns" :table="Table"></TableFilters>
+
     <!-- "ДОБАВИТЬ" И ЧИСЛО ЗАПИСЕЙ-->
     <div class="flex items-center justify-between">
       <slot name="defaultButtons">
@@ -176,7 +179,7 @@
           </div>
           <div
             class="cursor-pointer ml-2 text-lg py-2 mr-3 text-white block bg-blue-600 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
-            @click=" SaveTable() ">
+            @click=" SaveTable()">
             {{ Table.mode === 'add' ? 'Добавить' : 'Сохранить' }}
           </div>
         </div>
@@ -197,6 +200,7 @@ import TableOpts from './TableOpts';
 import FlameTable from './FlameTable';
 import ModalVue from './../components/default/Modal.vue';
 import Paginator from './Paginator.vue';
+import TableFilters from './TableFilters.vue';
 type Class<T> = new (...args: any[]) => T;
 
 import Datepicker from '@vuepic/vue-datepicker';
@@ -205,7 +209,7 @@ import { isNumber } from 'lodash';
 
 
 export default defineComponent({
-  components: { ModalVue, Paginator, Datepicker },
+  components: { ModalVue, Paginator, Datepicker, TableFilters },
   props: {
     rows: {
       default: [] as Array<any>,
