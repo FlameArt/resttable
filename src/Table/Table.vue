@@ -74,7 +74,6 @@
           </div>
           <div :key="'row_slot_' + (row as any).id" v-if="opts.onRowClickOpenSlot && !isRowCollapsed(row)">
             <slot name="RowSubSlot" :row="row" />
-            Test32
           </div>
         </template>
       </div>
