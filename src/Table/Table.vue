@@ -321,10 +321,12 @@ export default defineComponent({
 
     // Автозагрузка первичной версии
     if (props.opts.autoload === true) {
+      /** 
       const tModel = (props.model as any)
       tModel.all().then((r: any) => {
         Table.load(r);
-      })
+      })*/
+      Table.update();
     }
 
     const primaryKey = (Table.model as any).constructor.primaryKeys[0];

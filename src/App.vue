@@ -40,10 +40,7 @@ opts.Remove.can = true;
 
 opts.onRowClickOpenSlot = true;
 
-// Загружаем первичные данные
-Model.all({ sort: ['id'] }).then(r =>
-  TableComponent.value?.Table.load(r)
-)
+opts.LoadParams.sort = ['-dt1'];
 
 </script>
 
