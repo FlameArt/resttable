@@ -58,8 +58,9 @@
             <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'tc_' + column"
               class="table-cell border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
               @click="columnClick(row, column)">
-              <span>{{
+              <span v-if="!column.Table.isRawValue">{{
                 column.Table.value(row, column) }}</span>
+              <span v-else v-html="column.Table.value(row, column)"></span>
             </div>
             <div v-if="opts.Edit.can" class="table-cell border-r border-r-slate-100 px-2 text-center">
               <button class="px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">

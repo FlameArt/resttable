@@ -26,6 +26,15 @@ opts.set('dt1', { title: 'Дата 1' });
 opts.set('dt2', { title: 'Дата 2' });
 opts.set('id', { title: 'Дата 2', Filter: { isShow: false } });
 opts.set('file', { title: 'файл', Filter: { isShow: false } });
+opts.set("name", {
+  title: 'Название', Table:
+  {
+    isRawValue: true,
+    isShow: true,
+    value: (row, column) => '<a href="https://4h.notion.site/' + row[column.name].replace('-', '') + '">Notion</a>'
+  },
+  Popup: { isShow: true }
+});
 opts.Add.can = true;
 opts.Remove.can = true;
 
