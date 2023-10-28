@@ -53,25 +53,30 @@
       <!-- СТРОКИ-->
       <div class="table-row-group">
 
-        <div v-for="row in (Table.Rows.rows)" :key="'row_' + (row as any).id"
-          class="table-row cursor-pointer hover:bg-slate-100">
-          <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'tc_' + column"
-            class="table-cell border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
-            @click="column.Table.click(row, column)">
-            <span>{{
-              column.Table.value(row, column) }}</span>
+        <template v-for="(row) in (Table.Rows.rows)">
+          <div :key="'row_' + (row as any).id" class="table-row cursor-pointer hover:bg-slate-100" v-if="true">
+            <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'tc_' + column"
+              class="table-cell border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
+              @click="columnClick(row, column)">
+              <span>{{
+                column.Table.value(row, column) }}</span>
+            </div>
+            <div v-if="opts.Edit.can" class="table-cell border-r border-r-slate-100 px-2 text-center">
+              <button class="px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
+                Изменить
+              </button>
+            </div>
+            <div v-if="opts.Remove.can" class="table-cell border-r border-r-slate-100 px-2 text-center">
+              <button class="px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
+                Удалить
+              </button>
+            </div>
           </div>
-          <div v-if="opts.Edit.can" class="table-cell border-r border-r-slate-100 px-2 text-center">
-            <button class="px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
-              Изменить
-            </button>
+          <div :key="'row_slot_' + (row as any).id" v-if="opts.onRowClickOpenSlot && !isRowCollapsed(row)">
+            <slot name="RowSubSlot" :row="row" />
+            Test32
           </div>
-          <div v-if="opts.Remove.can" class="table-cell border-r border-r-slate-100 px-2 text-center">
-            <button class="px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
-              Удалить
-            </button>
-          </div>
-        </div>
+        </template>
       </div>
 
     </div>
@@ -194,7 +199,7 @@ import { onMounted, reactive, ref, defineProps } from '@vue/runtime-core'; impor
 // Иконки
 import { XCircleIcon } from '@icons/24/solid'
 import { computed } from '@vue/reactivity';
-import { Column } from './Columns';
+import { Column, IColumn } from './Columns';
 import { defineComponent } from 'vue';
 import TableOpts from './TableOpts';
 import FlameTable from './FlameTable';
@@ -322,6 +327,22 @@ export default defineComponent({
       })
     }
 
+    const primaryKey = (Table.model as any).constructor.primaryKeys[0];
+
+    const columnClick = (row: any, column: Column) => {
+      if (Table.opts.onRowClickOpenSlot) {
+        Table.RowsParams[row[primaryKey]].collapsed = !Table.RowsParams[row[primaryKey]].collapsed
+      }
+      else {
+        if (column?.Table?.click !== undefined)
+          column.Table.click(row, column);
+      }
+    }
+    const isRowCollapsed = (row: any) => {
+      return Table.RowsParams[row[primaryKey]].collapsed
+    }
+
+
     return {
       Table,
       FlameTableModal,
@@ -331,7 +352,10 @@ export default defineComponent({
       SaveTable,
       deleteRow,
       fileUpdated,
-      getSelector
+      getSelector,
+      primaryKey,
+      columnClick,
+      isRowCollapsed
     }
 
   },
@@ -368,7 +392,7 @@ export default defineComponent({
           }
         }
       }
-    }
+    },
   },
 
 })

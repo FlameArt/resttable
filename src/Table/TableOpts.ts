@@ -21,6 +21,10 @@ export default class TableOpts {
    */
   public LoadParams: ITableLoadParams = {};
 
+  /**
+   * Открывать субслот в таблице при клике
+   */
+  public onRowClickOpenSlot: boolean = false;
 
   public set(ColumnName: string, mergingOpts: IColumn) {
     // TODO: ЕСТЬ ОШИБКА???

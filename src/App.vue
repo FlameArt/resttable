@@ -20,8 +20,16 @@ onMounted(() => {
 
 const TableComponent = ref<InstanceType<typeof Table>>();
 const opts = new TableOpts;
+
+opts.set('name', { title: 'Название' });
+opts.set('dt1', { title: 'Дата 1' });
+opts.set('dt2', { title: 'Дата 2' });
+opts.set('id', { title: 'Дата 2', Filter: { isShow: false } });
+opts.set('file', { title: 'файл', Filter: { isShow: false } });
 opts.Add.can = true;
 opts.Remove.can = true;
+
+opts.onRowClickOpenSlot = true;
 
 // Загружаем первичные данные
 Model.all({ sort: ['id'] }).then(r =>
@@ -32,6 +40,8 @@ Model.all({ sort: ['id'] }).then(r =>
 
 <template lang="pug">
 Table(:model="Model", :opts="opts")
+  template(v-slot:RowSubSlot="params")
+    | {{ params.row.name }}
 </template>
 
 <style>

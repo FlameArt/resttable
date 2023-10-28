@@ -1,10 +1,14 @@
 <template>
   <div class="fc flex-wrap">
-    <div v-for="(col) in props.columns" :key="col.name">
-      {{ col.name }}
+    <div v-for="(col) in props.columns" :key="col.name" v-show="col.Filter.isShow">
+
       <!-- ТЕКСТ -->
-      <div v-if="col.Filter.type === 'text'">
-        <input type="text" @keyup="update()" v-model="col.Filter.valueString" />
+      <div class="fc flex-col">
+        <div class="text-xs text-slate-400">{{ col.title.toUpperCase() ?? col.name }}</div>
+        <div v-if="col.Filter.type === 'text' || col.Filter.type === 'fixed' || col.Filter.type === 'fulltext'">
+          <input class="outline-none border border-slate-500 px-2 py-1 mx-2" :placeholder="col.title ?? col.name"
+            type="text" @keyup="update()" v-model="col.Filter.valueString" />
+        </div>
       </div>
 
     </div>

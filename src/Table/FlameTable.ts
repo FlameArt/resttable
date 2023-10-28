@@ -4,6 +4,7 @@ import TableOpts from "./TableOpts";
 import { reactive, UnwrapRef } from 'vue';
 import merge from 'lodash-es/merge'
 import ITableLoadParams from './TableLoadParams';
+import TableRowParams from './TableRowParams';
 
 // Подгрузчик типа класса
 type Class<T> = new (...args: any[]) => T
@@ -38,6 +39,11 @@ export default class FlameTable<T> {
    * Строки
    */
   public Rows = reactive({ rows: [] as Array<T> });
+
+  /**
+   * Динамические параметры строк
+   */
+  public RowsParams: { [key: string]: TableRowParams } = reactive({});
 
   /**
    * Параметры паджинации
@@ -110,6 +116,16 @@ export default class FlameTable<T> {
     if (rows.data) {
       this.Rows.rows = (rows.data ?? []) as any;
       Object.keys(this.Pager).forEach((key) => (this.Pager as any)[key] = (rows.pages as any)[key])
+
+      // удаляем чтобы при перезагрузке не сохранялось состояние пред. строк
+      // производительность: если не стирать параметры строк, то при долгом пользовании таблицей и больших её объёмах в памяти накопится куча позиций, это утечка
+      for (const key in this.RowsParams) delete this.RowsParams[key];
+
+      // Заполняем параметры каждой строки
+      this.Rows.rows.forEach(row => {
+        // @ts-expect-error okay
+        this.RowsParams[row[this.model.constructor.primaryKeys[0]]] = new TableRowParams
+      })
     }
 
   }

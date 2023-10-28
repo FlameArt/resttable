@@ -246,7 +246,7 @@ export interface IColumn {
     isShow?: boolean,
 
     // Тип фильтра
-    type: "text" | "fixed" | "fulltext" | "number" | "date" | "daterange" | "selector",
+    type?: "text" | "fixed" | "fulltext" | "number" | "date" | "daterange" | "selector",
 
     // Значение
     valueString?: string,
