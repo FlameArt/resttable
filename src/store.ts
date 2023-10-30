@@ -16,7 +16,7 @@ export const storeFile = defineStore('store', {
 
       Table: {
         rows: {}
-      }
+      },
 
     }
   },

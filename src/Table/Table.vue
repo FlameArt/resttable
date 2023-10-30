@@ -22,8 +22,9 @@
 
       <!-- ЧИСЛО ЗАПИСЕЙ -->
       <div class="text-xs text-gray-400">
-        Показано: {{ Table.Pager.total > Table.Pager.perPage * Table.Pager.page ?
-          Table.Pager.perPage * Table.Pager.page : Table.Pager.total }} / {{ Table.Pager.total }} записей
+        {{ opts.lang === 'ru' ? 'Показано:' : 'Show' }} {{ Table.Pager.total > Table.Pager.perPage * Table.Pager.page ?
+          Table.Pager.perPage * Table.Pager.page : Table.Pager.total }} / {{ Table.Pager.total }} {{ opts.lang === 'ru' ?
+    'записей' : ' records' }}
       </div>
 
     </div>

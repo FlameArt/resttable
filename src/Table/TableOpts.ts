@@ -27,6 +27,11 @@ export default class TableOpts {
   public onRowClickOpenSlot: boolean = false;
 
   /**
+   * Язык
+   */
+  public lang: 'ru' | 'en' = "ru";
+
+  /**
    * Добавить виртуальный столбец (не будет учтён в запросах, но будет передан на бек для кастомизации фильтров)
    * @param ColumnName 
    * @param mergingOpts 
