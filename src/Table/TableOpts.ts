@@ -36,7 +36,7 @@ export default class TableOpts {
    * Удалить одну колонку или сразу несколько
    * @param ColumnName Полностью удалить строку
    */
-  public delete(ColumnName: string | Array<string>) {
+  public delete(ColumnName: string | Array<string>, opts: IColumn = {}) {
 
     let arr: Array<string> = [];
     if (typeof ColumnName === 'string') arr = [ColumnName as string];
