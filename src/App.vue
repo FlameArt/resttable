@@ -35,6 +35,10 @@ opts.set("name", {
   },
   Popup: { isShow: true }
 });
+
+
+opts.addVirtual('test', { title: 'test title', Table: { isShow: true, } })
+
 opts.Add.can = true;
 opts.Remove.can = true;
 

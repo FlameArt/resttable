@@ -5,6 +5,7 @@ export default interface ITableLoadParams {
    expand?: any,
    sort?: Array<string>,
    page?: number,
-   perPage?: number
+   perPage?: number,
+   params?: any
 
 }

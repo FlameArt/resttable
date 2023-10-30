@@ -26,6 +26,17 @@ export default class TableOpts {
    */
   public onRowClickOpenSlot: boolean = false;
 
+  /**
+   * Добавить виртуальный столбец (не будет учтён в запросах, но будет передан на бек для кастомизации фильтров)
+   * @param ColumnName 
+   * @param mergingOpts 
+   */
+  public addVirtual(ColumnName: string, mergingOpts: IColumn) {
+    this.columnsOpts[ColumnName] = new Column as any
+    merge(this.columnsOpts[ColumnName], mergingOpts)
+    this.columnsOpts[ColumnName].isVirtual = true;
+  }
+
   public set(ColumnName: string, mergingOpts: IColumn) {
     // TODO: ЕСТЬ ОШИБКА???
     if (this.columnsOpts[ColumnName] === undefined) this.columnsOpts[ColumnName] = new Column as any

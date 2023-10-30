@@ -149,10 +149,18 @@ export default class FlameTable<T> {
 
   public applyFiltersParams() {
     const customFilters: ITableLoadParams = {
-      where: {}
+      where: {},
+      params: {}
     };
     for (const key in this.columns) {
       const el = this.columns[key].Filter;
+
+      // Виртуальные элементы не фильтруем, но добавляем в массив
+      if (this.columns[key].isVirtual) {
+        customFilters.params[key] = el.valueString;
+        continue;
+      }
+
       switch (el.type) {
 
         // Частичное совпадение
@@ -160,6 +168,7 @@ export default class FlameTable<T> {
 
           if (el.valueString.trim() === '') continue;
           customFilters.where[key] = ['LIKE', key, el.valueString];
+
           break;
 
         // Фуллтекстовый поиск

@@ -1,6 +1,6 @@
 {
   "name": "flameresttable",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "main": "./src/plugin.ts",
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@vuepic/vue-datepicker": "^7.2.0",
-    "flamerest": "^1.0.92",
+    "flamerest": "^1.0.93",
     "lodash-es": "^4.17.21",
     "pinia": "^2.1.7",
     "pug": "github:FlameArt/pug-tailwind-only",

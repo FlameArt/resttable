@@ -9,6 +9,14 @@
           <input class="outline-none border border-slate-500 px-2 py-1 mx-2" :placeholder="col.title ?? col.name"
             type="text" @keyup="update()" v-model="col.Filter.valueString" />
         </div>
+        <div v-if="col.Filter.type === 'selector'">
+          <select class="outline-none border border-slate-500 px-2 py-1 mx-2" :placeholder="col.title ?? col.name"
+            @change="update()" v-model="col.Filter.valueString">
+            <option v-for="item in col.Selector.values" :key="item[0]">
+              
+            </option>
+          </select>
+        </div>
       </div>
 
     </div>

@@ -1,3 +1,6 @@
+// Подгрузчик типа класса
+type Class<T> = new (...args: any[]) => T
+
 export class Column implements IColumn {
 
   /**
@@ -10,6 +13,11 @@ export class Column implements IColumn {
    * Если не установлены более детализированные имена для заголовков таблицы или в попапе - используется оно
    */
   public title: string = "";
+
+  /**
+   * Поддержка виртуальных столбцов для кастомных запросов
+   */
+  public isVirtual: boolean = false;
 
   /**
    * Параметры таблицы
@@ -63,6 +71,11 @@ export class Column implements IColumn {
      * @returns Array
      */
     loader: () => [],
+
+    /**
+     * Модель, с которой выгружать значения
+     */
+    model: null as Class<any> | null,
 
     /**
      * Здесь список готовых значений
@@ -225,6 +238,10 @@ export interface IColumn {
    */
   title?: string,
 
+  /**
+   * Поддержка виртуальных столбцов для кастомных запросов
+   */
+  isVirtual?: boolean,
 
   /**
    * Параметры таблицы
