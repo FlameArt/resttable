@@ -45,7 +45,7 @@ export default class TableOpts {
     for (const key in arr) {
       // TODO: ????? as any
       if (this.columnsOpts[arr[key]] === undefined) this.columnsOpts[arr[key]] = new Column as any
-      merge(this.columnsOpts[arr[key]], { Table: { isShow: false }, Popup: { isShow: false } })
+      merge(this.columnsOpts[arr[key]], { Table: { isShow: false }, Popup: { isShow: false }, Filter: { isShow: false } })
     }
 
   }
