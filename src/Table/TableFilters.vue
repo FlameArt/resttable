@@ -12,10 +12,16 @@
         <div v-if="col.Filter.type === 'selector'">
           <select class="outline-none border border-slate-500 px-2 py-1 mx-2" :placeholder="col.title ?? col.name"
             @change="update()" v-model="col.Filter.valueString">
-            <option v-for="item in col.Selector.values" :key="item[0]">
-              
+            <option v-for="item in col.Selector.values" :key="item[0]" value="">
+              {{ item[1] }}
             </option>
           </select>
+        </div>
+        <div v-if="col.Filter.type === 'date' || col.Filter.type === 'daterange'">
+          <Datepicker v-if="col.Filter.type === 'date'" v-model="col.Filter.valueString" :auto-apply="true"
+            @update:model-value="update()" :teleport="true"></Datepicker>
+          <Datepicker v-if="col.Filter.type === 'daterange'" v-model="col.Filter.valueRange" :range="true"
+            :auto-apply="true" @update:model-value="update()" :teleport="true" style="z-index: 99999;"></Datepicker>
         </div>
       </div>
 
@@ -32,6 +38,7 @@ import TableOpts from './TableOpts';
 import { Column } from './Columns';
 //import { TableFilter } from './TableOpts.js';
 import FlameTable from './FlameTable';
+import Datepicker from '@vuepic/vue-datepicker';
 
 // Глобальное хранилище и роуты
 const store = storeFile(), router = useRouter(), route = useRoute();

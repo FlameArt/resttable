@@ -102,7 +102,7 @@ export class Column implements IColumn {
 
     // Значение
     valueString: "",
-    valueRange: { from: '', to: '' },
+    valueRange: [],
 
     // Тип фильтра
     type: 'text' as "text" | "fixed" | "fulltext" | "number" | "date" | "daterange" | "selector",
@@ -267,7 +267,7 @@ export interface IColumn {
 
     // Значение
     valueString?: string,
-    valueRange?: { from: string, to: string },
+    valueRange?: Array<string>,
 
     // Минимальное число символов в строке фильтра, после которого будет произведён запрос
     filterMinSymbolsRequest?: number,
