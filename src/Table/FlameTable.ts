@@ -212,8 +212,8 @@ export default class FlameTable<T> {
         case 'daterange':
 
           if (el.valueRange.length > 0) {
-            customFilters.where[key] = ['>=', key, el.valueRange[0]];
-            customFilters.where[key] = ['<=', key, el.valueRange[1]];
+            customFilters.where[key + '_from'] = ['>=', key, el.valueRange[0]];
+            customFilters.where[key + '_to'] = ['<=', key, el.valueRange[1]];
           }
 
           break;
@@ -305,6 +305,27 @@ export default class FlameTable<T> {
         result.push(r)
     })
     return result;
+  }
+
+  /**
+   * Выгрузить существующие колонки в CSV
+   * @param filename 
+   * @param arr 
+   */
+  public exportSelectedToCSV(filename: string = "table.csv", arr: any = null) {
+
+    arr = arr ?? this.getSelectedRows();
+
+    const array = [Object.keys(arr[0])].concat(arr);
+    const csv = array.map(row => Object.values(row).map(val => `"${val}"`).join(';')).join('\n');
+
+    const csvData = new Blob([csv], { type: 'text/csv' });
+    const csvURL = URL.createObjectURL(csvData);
+    const link = document.createElement('a');
+    link.href = csvURL;
+    link.download = filename;
+    link.click();
+
   }
 
 }

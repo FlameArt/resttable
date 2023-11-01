@@ -451,7 +451,7 @@ export default defineComponent({
   color: rgb(55, 53, 47);
   font-size: 14px;
   line-height: 16.8px;
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "Roboto", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
   border: 1px solid rgb(233, 233, 231);
 }
 
