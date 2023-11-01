@@ -71,6 +71,13 @@ export default class TableOpts {
 
   }
 
+  public Export = {
+    CSV: {
+      can: false,
+      buttonTitle: "Export to CSV",
+    }
+  }
+
   public Add = {
     can: true,
     buttonTitle: "Добавить",

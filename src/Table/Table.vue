@@ -8,13 +8,23 @@
     <div class="flex items-center justify-between">
       <slot name="defaultButtons">
         <div v-show="$props.opts?.Add.can"
-          class="flex cursor-pointer justify-center items-center text-white bg-blue-600 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 .focus:ring-4.focus:ring-blue-200.dark:focus:ring-blue-900"
+          class="flex mr-3 cursor-pointer justify-center items-center text-white bg-blue-600 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 .focus:ring-4.focus:ring-blue-200.dark:focus:ring-blue-900"
           @click="add()">
           <div class="text-xl">
             +
           </div>
           <div class="ml-2">
             {{ $props.opts?.Add.buttonTitle }}
+          </div>
+        </div>
+        <div v-show="$props.opts?.Export.CSV.can"
+          class="flex mr-3 cursor-pointer justify-center items-center text-white bg-blue-600 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 .focus:ring-4.focus:ring-blue-200.dark:focus:ring-blue-900"
+          @click="Table.exportSelectedToCSV()">
+          <div class="text-xl">
+            +
+          </div>
+          <div class="ml-2">
+            {{ $props.opts?.Export.CSV.buttonTitle }}
           </div>
         </div>
       </slot>
