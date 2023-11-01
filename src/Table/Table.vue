@@ -8,7 +8,7 @@
     <div class="flex items-center justify-between">
       <slot name="defaultButtons">
         <div v-show="$props.opts?.Add.can"
-          class="flex cursor-pointer justify-center items-center text-white block bg-blue-600 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 .focus:ring-4.focus:ring-blue-200.dark:focus:ring-blue-900"
+          class="flex cursor-pointer justify-center items-center text-white bg-blue-600 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 .focus:ring-4.focus:ring-blue-200.dark:focus:ring-blue-900"
           @click="add()">
           <div class="text-xl">
             +
@@ -34,8 +34,18 @@
 
       <!-- ЗАГОЛОВКИ СТОЛБЦОВ-->
       <div class="table-header-group">
-        <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'cheader_' + column"
-          class="table-cell border-r border-r-slate-100 px-2">
+
+        <!-- ЧЕКБОКСЫ -->
+        <div class="table-cell w-[65px] align-middle">
+          <label class="checkbox" v-if="Table.opts.rowSelectors">
+            <input type='checkbox' @change="CheckboxSelectionChanged($event, true)">
+            <span class='indicator'></span>
+          </label>
+        </div>
+
+        <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'cheader_' + column.name"
+          :class="' defaultHeader ' + column.Table.classesHeader"
+          class=" table-cell align-middle border-r border-r-slate-100 px-2">
           <span>{{ column.title !== '' ? column.title :
             column.name }}</span>
         </div>
@@ -55,10 +65,23 @@
       <div class="table-row-group">
 
         <template v-for="(row) in (Table.Rows.rows)">
-          <div :key="'row_' + (row as any).id" class="table-row cursor-pointer hover:bg-slate-100" v-if="true">
-            <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'tc_' + column"
-              class="table-cell border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
-              @click="columnClick(row, column)">
+          <div :key="'row_' + (row as any).id" class="defaultRow table-row cursor-pointer hover:bg-slate-100" v-if="true">
+
+            <!-- ЧЕКБОКСЫ -->
+            <div class="table-cell align-middle">
+              <label class="checkbox" v-if="Table.opts.rowSelectors">
+                <input type='checkbox' v-model="Table.RowsParams[(row as any)[primaryKey]].selected"
+                  @change="CheckboxSelectionChanged($event, false)">
+                <span class='indicator'></span>
+              </label>
+            </div>
+
+            <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'tc_' + column.name"
+              :class="' defaultCell ' + column.Table.classes"
+              class="table-cell align-middle border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
+              @click="columnClick(row, column)"
+              :style="(column.Table.width === null ? '' : 'width:' + column.Table.width + 'px')">
+
               <span v-if="!column.Table.isRawValue">{{
                 column.Table.value(row, column) }}</span>
               <span v-else v-html="column.Table.value(row, column)"></span>
@@ -181,12 +204,12 @@
         <!-- КНОПКИ СОХРАНЕНИЯ-->
         <div class="flex w-full mt-3 mb-2 justify-between items-center">
           <div v-show="$props.opts?.Add.can"
-            class="cursor-pointer ml-2 text-lg py-2 text-white block bg-gray-400 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
+            class="cursor-pointer ml-2 text-lg py-2 text-white block bg-gray-400 font-medium rounded px-4 text-center hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
             @click="Table.OpenedRow = null; FlameTableModal?.close()">
             Отмена
           </div>
           <div
-            class="cursor-pointer ml-2 text-lg py-2 mr-3 text-white block bg-blue-600 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
+            class="cursor-pointer ml-2 text-lg py-2 mr-3 text-white block bg-blue-600 font-medium rounded px-4 text-center hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
             @click=" SaveTable()">
             {{ Table.mode === 'add' ? 'Добавить' : 'Сохранить' }}
           </div>
@@ -398,6 +421,14 @@ export default defineComponent({
         }
       }
     },
+
+    CheckboxSelectionChanged(event: any, all: boolean = false) {
+      this.Table.getSelectedRows();
+      if (all === true)
+        for (const key in this.Table.RowsParams) {
+          this.Table.RowsParams[key].selected = event.target.checked
+        }
+    }
   },
 
 })
@@ -407,5 +438,89 @@ export default defineComponent({
 <style scoped lang="scss">
 .no-wrap-cell {
   white-space: nowrap !important;
+}
+
+.defaultHeader {
+  color: rgba(55, 53, 47, 0.65);
+  font-size: 14px;
+  line-height: 16.8px;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.defaultRow {
+  color: rgb(55, 53, 47);
+  font-size: 14px;
+  line-height: 16.8px;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  border: 1px solid rgb(233, 233, 231);
+}
+
+// ЧЕКБОКСЫ
+$black: #2D3137;
+$blue: #3785BC;
+$green: #329E78;
+$grey: #D6D6D6;
+$red: #DD3C3A;
+$white: #FFFFFF;
+
+$border-radius: 3px;
+
+@mixin checkbox($color) {
+  margin-right: 1rem;
+  padding-left: 1.75rem;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+
+    &:focus~span {
+      border: 2px solid lighten($black, 50%);
+    }
+
+    &:focus:checked~span {
+      border: 2px solid darken($color, 15%);
+    }
+
+    &:checked~span {
+      color: $white;
+      background: $color url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHdpZHRoPSIxMiIgaGVpZ2h0PSI5IiB2aWV3Qm94PSIwIDAgMTIgOSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgPHBhdGggZD0iTTQuNTc1IDguOTc3cy0uNDA0LS4wMDctLjUzNi0uMTY1TC4wNTcgNS42NGwuODI5LTEuMjI3TDQuNDcgNy4yNjggMTAuOTIxLjA4NmwuOTIzIDEuMTAzLTYuODYzIDcuNjRjLS4xMzQtLjAwMy0uNDA2LjE0OC0uNDA2LjE0OHoiIGZpbGw9IiNGRkYiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPg0KPC9zdmc+) 50% 40% no-repeat;
+      border: 2px solid $color;
+    }
+
+  }
+
+  span {
+    border-radius: $border-radius;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.09rem;
+    height: 1.09rem;
+    background-color: lighten($black, 65%);
+    border: 1px solid lighten($black, 65%);
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+label.checkbox {
+  @include checkbox($green);
+
+  &.blue {
+    @include checkbox($blue);
+  }
+
+  &.red {
+    @include checkbox($red);
+  }
 }
 </style>

@@ -34,6 +34,11 @@ export class Column implements IColumn {
     title: "",
 
     /**
+     * Выделена ли строка чекбоксом
+     */
+    isSelected: false,
+
+    /**
      * Возможность преобразовать вывод из любой колонки
      * @param row строка
      * @param column колонка
@@ -57,7 +62,22 @@ export class Column implements IColumn {
      * @param column 
      * @returns 
      */
-    click: (row: any, column: Column) => { }
+    click: (row: any, column: Column) => { },
+
+    /**
+     * CSS-классы колонки в таблице
+     */
+    classes: '',
+
+    /**
+     * CSS-классы заголовка таблице
+     */
+    classesHeader: '',
+
+    /**
+     * Ширина таблицы
+     */
+    width: null,
 
   }
 
@@ -117,7 +137,12 @@ export class Column implements IColumn {
 
     // Позиция фильтра по порядку
     filterRow: 0,
-    filterColumn: 0
+    filterColumn: 0,
+
+    /**
+     * CSS-классы, 
+     */
+    classes: '',
 
   }
 
@@ -251,7 +276,11 @@ export interface IColumn {
     title?: string,
     value?: (row: any, column: Column) => string,
     isRawValue?: boolean,
-    click?: (row: any, column: Column) => void
+    click?: (row: any, column: Column) => void,
+    classes?: string,
+    classesHeader?: string,
+    width?: number | null,
+    isSelected?: boolean,
   },
 
   /**

@@ -61,6 +61,11 @@ export default class FlameTable<T> {
   public OpenedRow: any = null;
 
   /**
+   * Выделенные галочками чекбоксы
+   */
+  public RowsSelected: Array<T> = [];
+
+  /**
    * Проинициализировать модели
    */
   public constructor(TableModel: Class<T>, opts: TableOpts) {
@@ -192,10 +197,10 @@ export default class FlameTable<T> {
         case 'number':
         case 'daterange':
 
-          if (el.valueRange.from.trim() !== '')
-            customFilters.where[key] = ['>=', key, el.valueRange.from];
-          if (el.valueRange.to.trim() !== '')
-            customFilters.where[key] = ['<=', key, el.valueRange.to];
+          if (el.valueRange.length > 0) {
+            customFilters.where[key] = ['>=', key, el.valueRange[0]];
+            customFilters.where[key] = ['<=', key, el.valueRange[1]];
+          }
 
           break;
 
@@ -278,6 +283,14 @@ export default class FlameTable<T> {
     return res;
   }
 
-
+  public getSelectedRows() {
+    const result: Array<T> = [];
+    this.Rows.rows.forEach((r: any) => {
+      const param = this.RowsParams[r[(this.model as any).constructor.primaryKeys[0]]]
+      if (param.selected)
+        result.push(r)
+    })
+    return result;
+  }
 
 }

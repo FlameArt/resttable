@@ -1,6 +1,6 @@
 <template>
   <div class="fc flex-wrap">
-    <div v-for="(col) in props.columns" :key="col.name" v-show="col.Filter.isShow">
+    <div v-for="(col) in props.columns" :key="col.name" v-show="col.Filter.isShow" :class="col.Filter.classes">
 
       <!-- ТЕКСТ -->
       <div class="fc flex-col">

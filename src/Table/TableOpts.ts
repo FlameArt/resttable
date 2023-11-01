@@ -12,6 +12,11 @@ export default class TableOpts {
   public autoload: boolean = true;
 
   /**
+   * Добавить колонку выбора записей галочками
+   */
+  public rowSelectors: boolean = true;
+
+  /**
    * Колонки
    */
   public columnsOpts: { [key: string]: IColumn } = {};
