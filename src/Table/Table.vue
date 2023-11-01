@@ -30,7 +30,7 @@
     </div>
 
     <!-- ТАБЛИЦА-->
-    <div class="mt-2 table w-full ">
+    <div class="mt-2 table table-fixed w-full ">
 
       <!-- ЗАГОЛОВКИ СТОЛБЦОВ-->
       <div class="table-header-group">
@@ -75,7 +75,9 @@
             </div>
           </div>
           <div :key="'row_slot_' + (row as any).id" v-if="opts.onRowClickOpenSlot && !isRowCollapsed(row)">
-            <slot name="RowSubSlot" :row="row" />
+            <div class="table-cell no-wrap-cell">
+              <slot name="RowSubSlot" :row="row" />
+            </div>
           </div>
         </template>
       </div>
@@ -402,4 +404,8 @@ export default defineComponent({
 
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.no-wrap-cell {
+  white-space: nowrap !important;
+}
+</style>

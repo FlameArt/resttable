@@ -52,7 +52,7 @@ opts.LoadParams.sort = ['-dt1'];
 <template lang="pug">
 Table(:model="Model", :opts="opts")
   template(v-slot:RowSubSlot="params")
-    | {{ params.row.name }}
+    | {{ params.row.name + ' dfg df dfg dfgdg dgdf gdfgd gdf gdgd fgdf gdf gdf gdfgdfg dfgdf gdg' }}
 </template>
 
 <style>
