@@ -19,9 +19,10 @@
         </div>
         <div v-if="col.Filter.type === 'date' || col.Filter.type === 'daterange'">
           <Datepicker v-if="col.Filter.type === 'date'" v-model="col.Filter.valueString" :auto-apply="true"
-            @update:model-value="update()" :teleport="true"></Datepicker>
+            :enable-time-picker="false" @update:model-value="update()" :teleport="true"></Datepicker>
           <Datepicker v-if="col.Filter.type === 'daterange'" v-model="col.Filter.valueRange" :range="true"
-            :auto-apply="true" @update:model-value="update()" :teleport="true" style="z-index: 99999;"></Datepicker>
+            :enable-time-picker="false" :auto-apply="true" @update:model-value="update()" :teleport="true"
+            style="z-index: 99999;"></Datepicker>
         </div>
       </div>
 

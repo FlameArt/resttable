@@ -162,8 +162,22 @@ export default class FlameTable<T> {
 
       // Виртуальные элементы не фильтруем, но добавляем в массив
       if (this.columns[key].isVirtual) {
-        customFilters.params[key] = el.valueString;
-        continue;
+        switch (el.type) {
+          case 'date':
+          case 'fixed':
+          case 'fulltext':
+          case 'selector':
+          case 'text':
+            customFilters.params[key] = el.valueString;
+            continue;
+          case 'daterange':
+          case 'number':
+            customFilters.params[key] = el.valueRange;
+            continue;
+          default:
+            alert('НЕИЗВЕСТНЫЙ ТИП')
+            continue;
+        }
       }
 
       switch (el.type) {

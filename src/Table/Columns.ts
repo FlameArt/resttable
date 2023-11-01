@@ -303,7 +303,12 @@ export interface IColumn {
 
     // Позиция фильтра по порядку
     filterRow?: number,
-    filterColumn?: number
+    filterColumn?: number,
+
+    /**
+     * CSS-классы, применяемые к фильтру, 
+     */
+    classes?: string,
 
   },
 
