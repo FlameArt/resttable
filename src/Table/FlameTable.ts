@@ -106,9 +106,10 @@ export default class FlameTable<T> {
     // TODO: Сортируем колонки, если указан порядок
     //this.columns
 
-
-
     // Далее юзер просто будет делать set("колонка", опции)
+
+    // Предзагружаем колонки
+    this.preloadRelated()
 
   }
 
@@ -132,6 +133,61 @@ export default class FlameTable<T> {
         this.RowsParams[row[this.model.constructor.primaryKeys[0]]] = new TableRowParams
       })
     }
+
+  }
+
+  public async preloadRelated() {
+
+    const allPreloadPromises: Promise<any>[] = [];
+    for (const key in this.columns) {
+      const col = this.columns[key];
+
+      // только где предзагрузка включена
+      if (col.Selector.preload !== true) continue;
+
+      // если указана модель, то загружаем через неё
+      if (col.Selector.model !== null)
+        allPreloadPromises.push(col.Selector.model.prototype.constructor.all({
+          perPage: 1000 // лимит в 1000 ответов для уменьшения дефолтного нагруза
+        }).then((r: any) => {
+
+          // Значение загрузилось: делаем преобразования
+
+          // ключ модели
+          const pk = (col.Selector.model).prototype.constructor['primaryKeys'][0];
+
+          // Ручные
+          if (typeof col.Selector.loader === 'function') {
+            col.Selector.values.push(...col.Selector.loader(r.data))
+          }
+
+          // Преобразования не найдено, попытка автоматически определить параметры
+          if (col.Selector.loader === null) {
+            const rows = r.data;
+            for (const row of rows) {
+              if (typeof row[pk] !== 'undefined') {
+
+                let name = typeof row['name'] !== 'undefined' ? row['name'].toString() : null;
+                name = name ?? (typeof row['title'] !== 'undefined' ? row['title'].toString() : null);
+                name = name ?? (typeof row['desc'] !== 'undefined' ? row['desc'].toString() : null);
+                const color = (typeof row['color'] !== 'undefined' ? row['color'].toString() : null);
+                const position = typeof row[pk] === 'number' ? row[pk] : 0;
+
+                col.Selector.values.push({
+                  id: row[pk],
+                  title: name,
+                  color: color,
+                  position: position
+                })
+
+              }
+            }
+          }
+        }))
+    }
+
+    // Начинаем процесс предзагрузки
+    await Promise.allSettled(allPreloadPromises);
 
   }
 
@@ -166,13 +222,18 @@ export default class FlameTable<T> {
           case 'date':
           case 'fixed':
           case 'fulltext':
-          case 'selector':
           case 'text':
             customFilters.params[key] = el.valueString;
             continue;
           case 'daterange':
           case 'number':
             customFilters.params[key] = el.valueRange;
+            continue;
+          case 'selector':
+            if (this.columns[key].Filter.selector.multiselect)
+              customFilters.params[key] = el.valueRange;
+            else
+              customFilters.params[key] = el.valueString;
             continue;
           default:
             alert('НЕИЗВЕСТНЫЙ ТИП')
@@ -200,7 +261,6 @@ export default class FlameTable<T> {
         // Точное совпадение
         case 'fixed':
         case 'date':
-        case 'selector':
 
           if (el.valueString.trim() === '') continue;
           customFilters.where[key] = el.valueString;
@@ -215,6 +275,15 @@ export default class FlameTable<T> {
             customFilters.where[key + '_from'] = ['>=', key, el.valueRange[0]];
             customFilters.where[key + '_to'] = ['<=', key, el.valueRange[1]];
           }
+
+          break;
+
+        case 'selector':
+
+          if (el.selector.multiselect)
+            customFilters.where[key] = ['IN', key, el.valueRange];
+          else
+            customFilters.where[key] = el.valueString;
 
           break;
 

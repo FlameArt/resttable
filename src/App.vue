@@ -4,6 +4,8 @@ import Table from './Table/Table.vue';
 import { ref } from 'vue';
 import Model from '@models/Testtable';
 import TableOpts from './Table/TableOpts';
+import Relatedtable from '@models/Relatedtable';
+
 
 const store = storeFile(), router = useRouter(), route = useRoute();
 
@@ -24,7 +26,7 @@ const opts = new TableOpts;
 opts.set('name', { title: 'Название' });
 opts.set('dt1', { title: 'Дата 1' });
 opts.set('dt2', { title: 'Дата 2' });
-opts.set('id', { title: 'Дата 2', Filter: { isShow: false } });
+opts.set('id', { title: 'ID', Selector: { model: Relatedtable }, Filter: { isShow: true, type: 'selector', selector: { multiselect: true } } });
 opts.set('file', { title: 'файл', Filter: { isShow: false } });
 opts.set("name", {
   title: 'Название', Table:

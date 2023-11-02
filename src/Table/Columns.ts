@@ -1,3 +1,5 @@
+import ITableSelectorItem from "./TableSelectorItem";
+
 // Подгрузчик типа класса
 type Class<T> = new (...args: any[]) => T
 
@@ -87,23 +89,29 @@ export class Column implements IColumn {
   public Selector = {
 
     /**
-     * Загрузчик значений
-     * @returns Array
+     * Нужна авто-предзагрузка значений при загрузке страницы
+     * [полная таблица]
      */
-    loader: () => [],
+    preload: true,
+
+    /**
+     * Загрузчик значений
+     * @returns ITableSelectorItem[]
+     */
+    loader: null as ((rows?: Array<any>) => ITableSelectorItem[]) | null,
 
     /**
      * Модель, с которой выгружать значения
      */
-    model: null as Class<any> | null,
+    model: null as any | null,
 
     /**
      * Здесь список готовых значений
      */
-    values: [],
+    values: [] as ITableSelectorItem[],
 
     /**
-     * Здесь можно определить кастомный лоадер при поиске
+     * Кастомизация вывода отдельного элемента
      * @param row 
      * @param col 
      * @returns 
@@ -130,7 +138,10 @@ export class Column implements IColumn {
     /**
      * Список значений под выбор
      */
-    select: [],
+    selector: {
+      mode: 'vertical' as 'vertical' | 'horizontal',
+      multiselect: true,
+    },
 
     // Минимальное число символов в строке фильтра, после которого будет произведён запрос
     filterMinSymbolsRequest: 0,
@@ -306,11 +317,56 @@ export interface IColumn {
     filterColumn?: number,
 
     /**
+     * Список значений под выбор
+     */
+    selector?: {
+      mode?: 'vertical' | 'horizontal',
+      multiselect?: boolean,
+    },
+
+    /**
      * CSS-классы, применяемые к фильтру, 
      */
     classes?: string,
 
   },
+
+  /**
+   * Это единые related данные для всех селекторов:
+   * внутри таблицы для замены id названий на значения
+   * селектор для фильтров
+   * селектор в попапе
+   */
+  Selector?: {
+
+    /**
+     * Загрузчик значений ручной
+     * @returns ITableSelectorItem[]
+     */
+    loader?: ((rows?: Array<any>) => ITableSelectorItem[]) | null,
+
+    /**
+     * Здесь список готовых значений
+     */
+    values?: ITableSelectorItem[],
+
+
+    /**
+     * Модель, с которой выгружать значения
+     */
+    model?: Class<any> | null,
+
+
+    /**
+     * Кастомизация вывода отдельного элемента
+     * @param row 
+     * @param col 
+     * @returns 
+     */
+    value?: (row: any, col: string) => string
+
+  },
+
 
   Popup?: {
 

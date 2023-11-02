@@ -2,20 +2,27 @@
   <div class="fc flex-wrap">
     <div v-for="(col) in props.columns" :key="col.name" v-show="col.Filter.isShow" :class="col.Filter.classes">
 
-      <!-- ТЕКСТ -->
       <div class="fc flex-col">
         <div class="text-xs text-slate-400">{{ col.title.toUpperCase() ?? col.name }}</div>
+
+        <!-- ТЕКСТ -->
         <div v-if="col.Filter.type === 'text' || col.Filter.type === 'fixed' || col.Filter.type === 'fulltext'">
           <input class="outline-none border border-slate-500 px-2 py-1 mx-2" :placeholder="col.title ?? col.name"
             type="text" @keyup="update()" v-model="col.Filter.valueString" />
         </div>
+
+        <!-- СЕЛЕКТОРЫ -->
         <div v-if="col.Filter.type === 'selector'">
-          <select class="outline-none border border-slate-500 px-2 py-1 mx-2" :placeholder="col.title ?? col.name"
-            @change="update()" v-model="col.Filter.valueString">
-            <option v-for="item in col.Selector.values" :key="item[0]" value="">
-              {{ item[1] }}
+
+          <!-- ВЕРТИКАЛЬНЫЕ -->
+          <select v-if="col.Filter.selector.mode === 'vertical'" :multiple="col.Filter.selector.multiselect"
+            class="outline-none border border-slate-500 px-2 py-1 mx-2" :placeholder="col.title ?? col.name"
+            @change="update(col)" v-model="col.Filter.valueString">
+            <option v-for="item in col.Selector.values" :key="item.id" :value="item.id">
+              {{ item.title }}
             </option>
           </select>
+
         </div>
         <div v-if="col.Filter.type === 'date' || col.Filter.type === 'daterange'">
           <Datepicker v-if="col.Filter.type === 'date'" v-model="col.Filter.valueString" :auto-apply="true"
@@ -31,12 +38,12 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import { onMounted, reactive, ref, defineProps } from '@vue/runtime-core'; import type { Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST from "flamerest"
+import { onMounted, reactive, ref, defineProps } from '@vue/runtime-core'; import { computed, type Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST from "flamerest"
 
 // Иконки
 import { XCircleIcon } from '@icons/24/solid'
 import TableOpts from './TableOpts';
-import { Column } from './Columns';
+import { Column, IColumn } from './Columns';
 //import { TableFilter } from './TableOpts.js';
 import FlameTable from './FlameTable';
 import Datepicker from '@vuepic/vue-datepicker';
@@ -61,11 +68,19 @@ onMounted(async () => {
 })
 
 
-const update = () => {
+const update = (col?: Column) => {
+
+  // селектор преобразуем к v-model
+  if (col && col.Filter?.selector?.multiselect) {
+    col.Filter.valueRange = (col.Filter.valueString as any);
+  }
 
   props.table.update();
 
 }
+
+
+
 
 </script>
 
