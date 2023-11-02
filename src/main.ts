@@ -7,6 +7,7 @@ import router from "./router";
 import 'vue-universal-modal/dist/index.css'
 import VueUniversalModal from 'vue-universal-modal'
 import REST from 'flamerest';
+import vSelect from 'vue-select'
 
 
 REST.SERVER = 'http://testrest';
@@ -15,5 +16,6 @@ REST.SERVER = 'http://testrest';
 createApp(App)
    .use(createPinia())
    .use(router)
+   .use(vSelect as any)
    .use(VueUniversalModal, { teleportTarget: '#my-modals', modalComponent: 'CustomModal' })
    .mount('#app')

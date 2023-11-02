@@ -176,6 +176,7 @@ export default class FlameTable<T> {
                 col.Selector.values.push({
                   id: row[pk],
                   title: name,
+                  label: name,
                   color: color,
                   position: position
                 })
@@ -230,8 +231,9 @@ export default class FlameTable<T> {
             customFilters.params[key] = el.valueRange;
             continue;
           case 'selector':
-            if (this.columns[key].Filter.selector.multiselect)
+            if (this.columns[key].Filter.selector.multiselect) {
               customFilters.params[key] = el.valueRange;
+            }
             else
               customFilters.params[key] = el.valueString;
             continue;
@@ -280,8 +282,10 @@ export default class FlameTable<T> {
 
         case 'selector':
 
-          if (el.selector.multiselect)
-            customFilters.where[key] = ['IN', key, el.valueRange];
+          if (el.selector.multiselect) {
+            if (el.valueRange.length > 0)
+              customFilters.where[key] = ['IN', key, el.valueRange];
+          }
           else
             customFilters.where[key] = el.valueString;
 

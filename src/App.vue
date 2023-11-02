@@ -6,7 +6,6 @@ import Model from '@models/Testtable';
 import TableOpts from './Table/TableOpts';
 import Relatedtable from '@models/Relatedtable';
 
-
 const store = storeFile(), router = useRouter(), route = useRoute();
 
 let notRedirectOnAuthList = [
@@ -26,7 +25,7 @@ const opts = new TableOpts;
 opts.set('name', { title: 'Название' });
 opts.set('dt1', { title: 'Дата 1' });
 opts.set('dt2', { title: 'Дата 2' });
-opts.set('id', { title: 'ID', Selector: { model: Relatedtable }, Filter: { isShow: true, type: 'selector', selector: { multiselect: true } } });
+opts.set('id', { title: 'ID', Selector: { model: Relatedtable }, Filter: { isShow: true, type: 'selector', selector: { multiselect: true, mode: 'vertical' } } });
 opts.set('file', { title: 'файл', Filter: { isShow: false } });
 opts.set("name", {
   title: 'Название', Table:
