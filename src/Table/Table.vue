@@ -4,40 +4,18 @@
     <!-- ФИЛЬТРЫ -->
     <TableFilters :columns="Table.columns" :table="Table"></TableFilters>
 
-    <!-- "ДОБАВИТЬ" И ЧИСЛО ЗАПИСЕЙ-->
-    <div class="flex items-center justify-between">
-      <slot name="defaultButtons">
-        <div v-show="$props.opts?.Add.can"
-          class="flex mr-3 cursor-pointer justify-center items-center text-white bg-blue-600 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 .focus:ring-4.focus:ring-blue-200.dark:focus:ring-blue-900"
-          @click="add()">
-          <div class="text-xl">
-            +
-          </div>
-          <div class="ml-2">
-            {{ $props.opts?.Add.buttonTitle }}
-          </div>
-        </div>
-        <div v-show="$props.opts?.Export.CSV.can"
-          class="flex mr-3 cursor-pointer justify-center items-center text-white bg-blue-600 font-medium rounded text-sm px-4 text-center hover:bg-blue-700 .focus:ring-4.focus:ring-blue-200.dark:focus:ring-blue-900"
-          @click="Table.exportSelectedToCSV()">
-          <div class="text-xl">
-            +
-          </div>
-          <div class="ml-2">
-            {{ $props.opts?.Export.CSV.buttonTitle }}
-          </div>
-        </div>
-      </slot>
-      <slot name="otherButtons" />
+    <!-- ПАНЕЛЬ ОПЕРАЦИЙ НАД ТАБЛИЦЕЙ -->
+    <TableTasksPanel :table="Table" @add="add">
+      <template #defaultButtons>
+        <slot name="defaultButtons">
+        </slot>
+      </template>
+      <template #otherButtons>
+        <slot name="otherButtons">
+        </slot>
+      </template>
 
-      <!-- ЧИСЛО ЗАПИСЕЙ -->
-      <div class="text-xs text-gray-400">
-        {{ opts.lang === 'ru' ? 'Показано:' : 'Showing' }} {{ Table.Pager.total > Table.Pager.perPage * Table.Pager.page ?
-          Table.Pager.perPage * Table.Pager.page : Table.Pager.total }} / {{ Table.Pager.total }} {{ opts.lang === 'ru' ?
-    'записей' : ' records' }}
-      </div>
-
-    </div>
+    </TableTasksPanel>
 
     <!-- ТАБЛИЦА-->
     <div class="mt-2 table table-fixed w-full ">
@@ -72,7 +50,7 @@
       </div>
 
       <!-- СТРОКИ-->
-      <div class="table-row-group">
+      <div class="table-row-group text-left">
 
         <template v-for="(row) in (Table.Rows.rows)">
           <div :key="'row_' + (row as any).id" class="defaultRow table-row cursor-pointer hover:bg-slate-100" v-if="true">
@@ -248,10 +226,11 @@ import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { isNumber } from 'lodash';
 import 'vue-select/dist/vue-select.css';
+import TableTasksPanel from './TableTasksPanel.vue';
 
 
 export default defineComponent({
-  components: { ModalVue, Paginator, Datepicker, TableFilters },
+  components: { ModalVue, Paginator, Datepicker, TableFilters, TableTasksPanel },
   props: {
     rows: {
       default: [] as Array<any>,

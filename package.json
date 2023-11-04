@@ -1,6 +1,6 @@
 {
   "name": "flameresttable",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "main": "./src/plugin.ts",
   "repository": {
     "type": "git",
@@ -15,8 +15,8 @@
     "android": "npm run build && npx cap add android && npx cap sync && npx cap open android"
   },
   "dependencies": {
-    "@vuepic/vue-datepicker": "^7.2.0",
-    "flamerest": "^1.0.93",
+    "@vuepic/vue-datepicker": "^7.2.1",
+    "flamerest": "^1.0.94",
     "lodash-es": "^4.17.21",
     "pinia": "^2.1.7",
     "pug": "github:FlameArt/pug-tailwind-only",
@@ -38,7 +38,7 @@
     "@volar/vue-language-plugin-pug": "^1.6.5",
     "@vue/compiler-sfc": "^3.3.7",
     "autoprefixer": "^10.4.16",
-    "eslint": "^8.52.0",
+    "eslint": "^8.53.0",
     "eslint-plugin-vue": "^8.7.1",
     "postcss": "^8.4.31",
     "postcss-import": "^14.1.0",

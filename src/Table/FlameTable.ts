@@ -125,12 +125,17 @@ export default class FlameTable<T> {
 
       // удаляем чтобы при перезагрузке не сохранялось состояние пред. строк
       // производительность: если не стирать параметры строк, то при долгом пользовании таблицей и больших её объёмах в памяти накопится куча позиций, это утечка
-      for (const key in this.RowsParams) delete this.RowsParams[key];
+
+      // upd: Не удаляем, чтобы хранить данные по выделениям между фильтрацией и паджинацией. Сбрасывается вручную
+      for (const key in this.RowsParams)
+        if (!this.RowsParams[key].selected)
+          delete this.RowsParams[key];
 
       // Заполняем параметры каждой строки
       this.Rows.rows.forEach(row => {
-        // @ts-expect-error okay
-        this.RowsParams[row[this.model.constructor.primaryKeys[0]]] = new TableRowParams
+        const newParam = new TableRowParams;
+        newParam.item = row;
+        this.RowsParams[(row as any)[(this.model as any).constructor.primaryKeys[0]]] = newParam;
       })
     }
 
@@ -194,14 +199,12 @@ export default class FlameTable<T> {
 
   /**
    * Обновить результаты от RESTа
-   * @param SaveLoadParams Сохранить стандартные параметры загрузки
+   * @param CustomLoadParams Применить кастомные параметры загрузки
    */
-  public async update(SaveLoadParams: any = null) {
-
-    if (SaveLoadParams !== null) this.opts.LoadParams = SaveLoadParams;
+  public async update(CustomLoadParams: ITableLoadParams = {}) {
 
     // Дополняем загрузочные параметры фильтрами
-    const filters = this.applyFiltersParams();
+    const filters = merge(this.applyFiltersParams(), CustomLoadParams);
 
     const rows: Rows<T> = await (this.model as any).constructor.all(merge({}, this.opts.LoadParams, filters, { page: this.Pager.page, perPage: this.Pager.perPage }));
 
@@ -209,6 +212,10 @@ export default class FlameTable<T> {
 
   }
 
+  /**
+   * Применить параметры, указанные в фильтрах
+   * @returns 
+   */
   public applyFiltersParams() {
     const customFilters: ITableLoadParams = {
       where: {},
@@ -227,8 +234,10 @@ export default class FlameTable<T> {
             customFilters.params[key] = el.valueString;
             continue;
           case 'daterange':
-          case 'number':
             customFilters.params[key] = el.valueRange;
+            continue;
+          case 'number':
+            customFilters.params[key] = el.valueRangeNumbers;
             continue;
           case 'selector':
             if (this.columns[key].Filter.selector.multiselect) {
@@ -381,22 +390,20 @@ export default class FlameTable<T> {
     return res;
   }
 
+  /**
+   * Получить все выбранные колонки массивом объектов строк
+   * @returns 
+   */
   public getSelectedRows() {
-    const result: Array<T> = [];
-    this.Rows.rows.forEach((r: any) => {
-      const param = this.RowsParams[r[(this.model as any).constructor.primaryKeys[0]]]
-      if (param.selected)
-        result.push(r)
-    })
-    return result;
+    return this.Rows.rows.filter((r: any) => r.selected).map((r: any) => r.item);
   }
 
   /**
-   * Выгрузить существующие колонки в CSV
+   * Выгрузить существующие колонки в CSV средствами браузера
    * @param filename 
    * @param arr 
    */
-  public exportSelectedToCSV(filename: string = "table.csv", arr: any = null) {
+  public exportToCSV(filename: string = "table.csv", arr: any = null) {
 
     arr = arr ?? this.getSelectedRows();
 
@@ -409,6 +416,61 @@ export default class FlameTable<T> {
     link.href = csvURL;
     link.download = filename;
     link.click();
+
+  }
+
+  /**
+   * Выгрузить в Excel средствами бекенда
+   * @param filename 
+   * @param arr 
+   */
+  public exportToXLS(onlySelected: boolean = false, filename: string | null = null, arr: any = null, columnList: Array<string> | null = null) {
+
+    const tClass = Object.getPrototypeOf(this.model).constructor;
+    const indexKey = tClass.primaryKeys[0];
+
+    const customFilter: ITableLoadParams = {
+      where: {}
+    };
+
+    // Только выбранные элементы
+    if (onlySelected) {
+      // Получаем айдишки и затем вносим их в условие IN
+      arr = arr ?? this.getSelectedRows();
+      const INArray: Array<any> = [];
+      for (const row of arr) {
+        if (typeof row[indexKey] !== 'undefined') {
+          INArray.push(row[indexKey]);
+        }
+      }
+      if (INArray.length > 0) {
+        customFilter.where = {
+          indexKey: ['IN', indexKey, INArray]
+        }
+      }
+    }
+
+    customFilter.export = {
+      format: "xlsx",
+      titles: [],
+      filename: filename ?? 'export_' + Date.now() + ".xlsx"
+    };
+    customFilter.fields = [];
+
+    for (const colKey in this.columns) {
+
+      const col = this.columns[colKey];
+      if (columnList !== null && (!columnList.includes(col.name))) continue;
+      if (columnList === null && (col.isVirtual || !col.Table.isShow)) continue;
+
+      // проверки пройдены, все оставшиеся колонки добавляем в вывод
+      (customFilter as any).export.titles.push(col.title !== '' ? col.title : col.name);
+      customFilter.fields.push(col.name);
+
+    }
+
+    // Делаем запрос на отдачу
+    this.update(customFilter);
 
   }
 

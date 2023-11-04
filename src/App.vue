@@ -54,6 +54,7 @@ opts.LoadParams.sort = ['-dt1'];
 Table(:model="Model", :opts="opts")
   template(v-slot:RowSubSlot="params")
     | {{ params.row.name + ' LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  line' }}
+  template(#otherButtons)
 </template>
 
 <style>
