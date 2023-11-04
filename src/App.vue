@@ -39,7 +39,7 @@ opts.set("name", {
 
 
 opts.addVirtual('test', { title: 'test title', Table: { isShow: true, } })
-opts.addVirtual('date', { title: 'dt', Filter: { isShow: true, type: 'daterange' }, Table: { isShow: true, } })
+opts.addVirtual('date', { title: 'dt', Filter: { isShow: true, type: 'number' }, Table: { isShow: true, } })
 
 opts.Add.can = true;
 opts.Remove.can = true;

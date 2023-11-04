@@ -46,7 +46,7 @@
       <div class="table-header-group">
 
         <!-- ЧЕКБОКСЫ -->
-        <div class="table-cell w-[65px] align-middle">
+        <div class="table-cell  w-[21px] align-middle">
           <label class="checkbox" v-if="Table.opts.rowSelectors">
             <input type='checkbox' @change="CheckboxSelectionChanged($event, true)">
             <span class='indicator'></span>
@@ -78,7 +78,7 @@
           <div :key="'row_' + (row as any).id" class="defaultRow table-row cursor-pointer hover:bg-slate-100" v-if="true">
 
             <!-- ЧЕКБОКСЫ -->
-            <div class="table-cell align-middle">
+            <div class="table-cell align-middle w-[21px]">
               <label class="checkbox" v-if="Table.opts.rowSelectors">
                 <input type='checkbox' v-model="Table.RowsParams[(row as any)[primaryKey]].selected"
                   @change="CheckboxSelectionChanged($event, false)">
@@ -477,7 +477,7 @@ $white: #FFFFFF;
 $border-radius: 3px;
 
 @mixin checkbox($color) {
-  margin-right: 1rem;
+  //margin-right: 1rem;
   padding-left: 1.75rem;
   position: relative;
   -webkit-user-select: none;
@@ -488,6 +488,9 @@ $border-radius: 3px;
   input[type="checkbox"] {
     position: absolute;
     opacity: 0;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 
     &:focus~span {
       border: 2px solid lighten($black, 50%);

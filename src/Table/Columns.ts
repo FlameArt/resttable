@@ -131,6 +131,10 @@ export class Column implements IColumn {
     // Значение
     valueString: "",
     valueRange: [],
+    valueRangeNumbers: {
+      from: '',
+      to: ''
+    },
 
     // Тип фильтра
     type: 'text' as "text" | "fixed" | "fulltext" | "number" | "date" | "daterange" | "selector",
@@ -308,6 +312,10 @@ export interface IColumn {
     // Значение
     valueString?: string,
     valueRange?: Array<string>,
+    valueRangeNumbers?: {
+      from?: string,
+      to?: string
+    },
 
     // Минимальное число символов в строке фильтра, после которого будет произведён запрос
     filterMinSymbolsRequest?: number,

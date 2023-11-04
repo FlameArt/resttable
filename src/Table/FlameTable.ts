@@ -269,8 +269,17 @@ export default class FlameTable<T> {
 
           break;
 
-        // ДИАПАЗОН
+        // ЧИСЛА
         case 'number':
+
+          if (el.valueRangeNumbers.from.length > 0)
+            customFilters.where[key + '_from'] = ['>=', key, el.valueRangeNumbers.from];
+          if (el.valueRangeNumbers.to.length > 0)
+            customFilters.where[key + '_to'] = ['<=', key, el.valueRangeNumbers.to];
+
+          break;
+
+        // ДИАПАЗОН ДАТ
         case 'daterange':
 
           if (el.valueRange.length > 0) {
@@ -279,6 +288,8 @@ export default class FlameTable<T> {
           }
 
           break;
+
+
 
         case 'selector':
 
