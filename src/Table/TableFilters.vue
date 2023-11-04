@@ -30,7 +30,7 @@
         <!-- ВЕРТИКАЛЬНЫЕ -->
         <div v-if="col.Filter.type === 'selector'" class="mobile:w-full">
           <v-select :multiple="col.Filter.selector.multiselect" v-model="col.Filter.valueString"
-            :options="col.Selector.values" class="min-w-[150px]" @option:selected="update(col)"
+            :options="col.Selector.values" class="mobile:w-full min-w-[150px]" @option:selected="update(col)"
             @option:deselected="update(col)" />
         </div>
 
