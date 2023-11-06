@@ -121,6 +121,8 @@ const selectAction = () => {
       return;
   }
 
+  state.selectModel = 0;
+
 }
 
 </script>

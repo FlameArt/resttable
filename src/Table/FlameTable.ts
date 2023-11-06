@@ -119,6 +119,8 @@ export default class FlameTable<T> {
    */
   public load(rows: Rows<T>) {
 
+    rows.pages = rows.pages ?? { count: 0, page: 1, perPage: 1, total: 0 };
+
     if (rows.data) {
       this.Rows.rows = (rows.data ?? []) as any;
       Object.keys(this.Pager).forEach((key) => (this.Pager as any)[key] = (rows.pages as any)[key])
@@ -201,14 +203,15 @@ export default class FlameTable<T> {
    * Обновить результаты от RESTа
    * @param CustomLoadParams Применить кастомные параметры загрузки
    */
-  public async update(CustomLoadParams: ITableLoadParams = {}) {
+  public async update(CustomLoadParams: ITableLoadParams = {}, isFile = false) {
 
     // Дополняем загрузочные параметры фильтрами
     const filters = merge(this.applyFiltersParams(), CustomLoadParams);
 
     const rows: Rows<T> = await (this.model as any).constructor.all(merge({}, this.opts.LoadParams, filters, { page: this.Pager.page, perPage: this.Pager.perPage }));
 
-    this.load(rows);
+    if (!isFile)
+      this.load(rows);
 
   }
 
@@ -470,7 +473,7 @@ export default class FlameTable<T> {
     }
 
     // Делаем запрос на отдачу
-    this.update(customFilter);
+    this.update(customFilter, true);
 
   }
 
