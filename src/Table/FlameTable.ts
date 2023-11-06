@@ -134,10 +134,13 @@ export default class FlameTable<T> {
           delete this.RowsParams[key];
 
       // Заполняем параметры каждой строки
-      this.Rows.rows.forEach(row => {
-        const newParam = new TableRowParams;
-        newParam.item = row;
-        this.RowsParams[(row as any)[(this.model as any).constructor.primaryKeys[0]]] = newParam;
+      const pk = (this.model as any).constructor.primaryKeys[0];
+      this.Rows.rows.forEach((row: any) => {
+        if (typeof this.RowsParams[row[pk]] === 'undefined') {
+          const newParam = new TableRowParams;
+          newParam.item = row;
+          this.RowsParams[row[pk]] = newParam;
+        }
       })
     }
 
@@ -211,7 +214,21 @@ export default class FlameTable<T> {
     const rows: Rows<T> = await (this.model as any).constructor.all(merge({}, this.opts.LoadParams, filters, { page: this.Pager.page, perPage: this.Pager.perPage }));
 
     if (!isFile)
+
+      // Строки: загружаем
       this.load(rows);
+
+    else {
+      // Файл: скачиваем
+      const url = window.URL.createObjectURL((rows as any).data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'file.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
 
   }
 
