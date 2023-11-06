@@ -415,7 +415,13 @@ export default class FlameTable<T> {
    * @returns 
    */
   public getSelectedRows() {
-    return this.Rows.rows.filter((r: any) => r.selected).map((r: any) => r.item);
+    const res = [];
+    for (const key in this.RowsParams) {
+      const el = this.RowsParams[key];
+      if (el.selected)
+        res.push(el.item)
+    }
+    return res;
   }
 
   /**

@@ -33,7 +33,7 @@
 
 
       <!-- ЧИСЛО ЗАПИСЕЙ -->
-      <div class="text-xs text-gray-400">
+      <div class="text-xs text-gray-400 ml-2">
         {{ state.opts.lang === 'ru' ? 'Показано:' : 'Showing' }} {{ state.Table.Pager.total > state.Table.Pager.perPage *
           state.Table.Pager.page ?
           state.Table.Pager.perPage * state.Table.Pager.page : state.Table.Pager.total }} / {{ state.Table.Pager.total }} {{
@@ -52,7 +52,8 @@
           <label>
             <select class="minimal text-xs text-center text-slate-500" v-model="state.selectModel" @change="selectAction">
               <option :value="0">{{ state.opts.lang === 'ru' ? 'ДЕЙСТВИЯ' : 'ACTIONS' }}</option>
-              <option :value="1">{{ state.opts.lang === 'ru' ? 'Выгрузить выбранные' : 'Export selected' }} [{{ 5 }}]
+              <option :value="1">{{ state.opts.lang === 'ru' ? 'Выгрузить выбранные' : 'Export selected' }} [{{
+                state.Table.getSelectedRows().length }}]
               </option>
               <option :value="2">{{ state.opts.lang === 'ru' ? 'Выгрузить всё' : 'Export all' }} [{{
                 state.Table.Pager.total }}]</option>
@@ -112,13 +113,13 @@ const selectAction = () => {
 
   switch (state.selectModel) {
     case 0:
-      return;
+      break;
     case 1:
-
-      return;
+      state.Table.exportToXLS(true);
+      break;
     case 2:
       state.Table.exportToXLS();
-      return;
+      break;
   }
 
   state.selectModel = 0;
