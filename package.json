@@ -1,18 +1,14 @@
 {
   "name": "flameresttable",
-  "version": "1.0.46",
+  "version": "1.0.47",
   "main": "./src/plugin.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/FlameArt/resttable.git"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "npm run build && vite preview",
-    "install/update": "npm i && npm update --save",
     "push and publish": "git push && npm --no-git-tag-version version patch && npm publish",
-    "android": "npm run build && npx cap add android && npx cap sync && npx cap open android"
+    "install/update": "npm i && npm update --save"
   },
   "dependencies": {
     "@vuepic/vue-datepicker": "^7.2.1",
