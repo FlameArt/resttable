@@ -55,6 +55,12 @@ const goPage = (page: number) => {
 
 <style scoped lang="scss">
 .selectedPage {
-  @apply z-10 bg-indigo-50 border-indigo-500 text-indigo-600
+  z-index: -10;
+  background-color: #D6E4F0 !important;
+  /* Замените цвет на индиго-50, если требуется */
+  border-color: #5A67D8 !important;
+  /* Замените цвет на индиго-500, если требуется */
+  color: #667CFF !important;
+  /* Замените цвет на индиго-600, если требуется */
 }
 </style>
