@@ -205,15 +205,16 @@ export default class FlameTable<T> {
   /**
    * Обновить результаты от RESTа
    * @param CustomLoadParams Применить кастомные параметры загрузки
+   * @param exportFilename имя файла для экспорта, если указано, данные будут выгружены
    */
-  public async update(CustomLoadParams: ITableLoadParams = {}, isFile = false) {
+  public async update(CustomLoadParams: ITableLoadParams = {}, exportFilename: string | null = null) {
 
     // Дополняем загрузочные параметры фильтрами
     const filters = merge(this.applyFiltersParams(), CustomLoadParams);
 
     const rows: Rows<T> = await (this.model as any).constructor.all(merge({}, this.opts.LoadParams, filters, { page: this.Pager.page, perPage: this.Pager.perPage }));
 
-    if (!isFile)
+    if (exportFilename === null)
 
       // Строки: загружаем
       this.load(rows);
@@ -223,7 +224,7 @@ export default class FlameTable<T> {
       const url = window.URL.createObjectURL((rows as any).data);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'file.xlsx';
+      a.download = exportFilename;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -496,7 +497,7 @@ export default class FlameTable<T> {
     }
 
     // Делаем запрос на отдачу
-    this.update(customFilter, true);
+    this.update(customFilter, customFilter.export.filename ?? null);
 
   }
 
