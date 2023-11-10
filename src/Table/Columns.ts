@@ -41,7 +41,7 @@ export class Column implements IColumn {
      * @param col 
      * @returns 
      */
-    titleCustom: (col: IColumn) => null,
+    titleCustom: (col: Column) => null,
 
     /**
      * Выделена ли строка чекбоксом
@@ -311,7 +311,7 @@ export interface IColumn {
      * @param col 
      * @returns 
      */
-    titleCustom: (col: IColumn) => string | null,
+    titleCustom: (col: Column) => string | null,
 
   },
 
