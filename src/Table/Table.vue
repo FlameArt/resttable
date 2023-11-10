@@ -34,7 +34,8 @@
         <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'cheader_' + column.name"
           :class="' defaultHeader ' + column.Table.classesHeader"
           class=" table-cell align-middle border-r border-r-slate-100 px-2">
-          <span>{{ column.Table.titleCustom !== null ? column.Table.titleCustom(column) : column.Table.title !== '' ?
+          <span>{{ column.Table.titleCustom !== null ? (column as any).Table.titleCustom(column) : column.Table.title !==
+            '' ?
             column.Table.title : column.title !== '' ? column.title :
               column.name }}</span>
         </div>
