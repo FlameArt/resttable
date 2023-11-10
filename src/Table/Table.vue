@@ -34,8 +34,9 @@
         <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'cheader_' + column.name"
           :class="' defaultHeader ' + column.Table.classesHeader"
           class=" table-cell align-middle border-r border-r-slate-100 px-2">
-          <span>{{ column.title !== '' ? column.title :
-            column.name }}</span>
+          <span>{{ column.Table.titleCustom !== null ? column.Table.titleCustom(column) : column.Table.title !== '' ?
+            column.Table.title : column.title !== '' ? column.title :
+              column.name }}</span>
         </div>
         <div v-if="opts.Edit.can" class="table-cell border-r border-r-slate-100 px-2">
           <button class="bg-green-600 invisible">

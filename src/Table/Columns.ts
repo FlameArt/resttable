@@ -36,6 +36,14 @@ export class Column implements IColumn {
     title: "",
 
     /**
+     * Кастомный заголовок
+     * @param row 
+     * @param col 
+     * @returns 
+     */
+    titleCustom: (col: IColumn) => null,
+
+    /**
      * Выделена ли строка чекбоксом
      */
     isSelected: false,
@@ -296,6 +304,15 @@ export interface IColumn {
     classesHeader?: string,
     width?: number | null,
     isSelected?: boolean,
+
+    /**
+     * Кастомный заголовок
+     * @param row 
+     * @param col 
+     * @returns 
+     */
+    titleCustom: (col: IColumn) => string | null,
+
   },
 
   /**
