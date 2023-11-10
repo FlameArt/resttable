@@ -311,7 +311,7 @@ export interface IColumn {
      * @param col 
      * @returns 
      */
-    titleCustom: ((col: Column) => string) | null,
+    titleCustom?: ((col: Column) => string) | null,
 
   },
 
