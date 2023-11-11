@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import Model from '@models/Testtable';
 import TableOpts from './Table/TableOpts';
 import Relatedtable from '@models/Relatedtable';
+import SubRow from './pages/SubRow.vue';
 
 const store = storeFile(), router = useRouter(), route = useRoute();
 
@@ -53,7 +54,9 @@ opts.LoadParams.sort = ['-dt1'];
 <template lang="pug">
 Table(:model="Model", :opts="opts")
   template(v-slot:RowSubSlot="params")
-    | {{ params.row.name + ' LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  line' }}
+    //| {{ params.row.name + ' LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  line' }}
+    //SubRow
+    div(class="flex items-center justify-center w-full mx-auto") AAA
   template(#otherButtons)
 </template>
 
