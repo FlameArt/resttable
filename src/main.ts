@@ -16,6 +16,5 @@ REST.SERVER = 'http://testrest';
 createApp(App)
    .use(createPinia())
    .use(router)
-   .use(vSelect as any)
    .use(VueUniversalModal, { teleportTarget: '#my-modals', modalComponent: 'CustomModal' })
    .mount('#app')
