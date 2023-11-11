@@ -32,18 +32,19 @@
       </div>
 
       <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'cheader_' + column.name"
-        :class="' defaultHeader ' + column.Table.classesHeader" class="  align-middle border-r border-r-slate-100 px-2">
+        :class="' defaultHeader ' + column.Table.classesHeader"
+        class="  col-span-1 align-middle border-r border-r-slate-100 px-2">
         <span>{{ column.Table.titleCustom !== null ? (column as any).Table.titleCustom(column) : column.Table.title !==
           '' ?
           column.Table.title : column.title !== '' ? column.title :
             column.name }}</span>
       </div>
-      <div v-if="opts.Edit.can" class=" border-r border-r-slate-100 px-2">
+      <div v-if="opts.Edit.can" class=" col-span-1 border-r border-r-slate-100 px-2">
         <button class="bg-green-600 invisible">
 
         </button>
       </div>
-      <div v-if="opts.Remove.can" class=" border-r border-r-slate-100 px-2">
+      <div v-if="opts.Remove.can" class=" col-span-1 border-r border-r-slate-100 px-2">
         <button class="bg-green-600 invisible">
 
         </button>
@@ -66,7 +67,7 @@
 
           <div v-for="column in Table.columns" v-show="column.Table.isShow"
             :key="'tc_' + column.name + '_row_' + (row as any).id" :class="' defaultCell ' + column.Table.classes"
-            class=" align-middle border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
+            class=" col-span-1 align-middle border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
             @click="columnClick(row, column)"
             :style="(column.Table.width === null ? '' : 'width:' + column.Table.width + 'px')">
 
@@ -74,7 +75,7 @@
               column.Table.value(row, column) }}</span>
             <span v-else v-html="column.Table.value(row, column)"></span>
           </div>
-          <div v-if="opts.Edit.can" class=" border-r border-r-slate-100 px-2 text-center"
+          <div v-if="opts.Edit.can" class=" col-span-1 border-r border-r-slate-100 px-2 text-center"
             :key="'edit_' + 'row_' + (row as any).id">
             <button class="mobile:hidden px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
               Изменить
@@ -83,7 +84,7 @@
               <img src="/src/assets/icons/edit.svg" class="w-4 h-4 fill-white" />
             </button>
           </div>
-          <div v-if="opts.Remove.can" class=" border-r border-r-slate-100 px-2 text-center"
+          <div v-if="opts.Remove.can" class=" col-span-1 border-r border-r-slate-100 px-2 text-center"
             :key="'delete_' + 'row_' + (row as any).id">
             <button class="mobile:hidden px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
               Удалить
@@ -458,6 +459,8 @@ export default defineComponent({
 
 .defaultTable {
   font-family: "Roboto", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 14px;
+  text-align: left;
 }
 
 .defaultHeader {
