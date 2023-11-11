@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-0  overflow-x-scroll">
+  <div class="mt-0 overflow-x-scroll defaultTable">
 
     <!-- ФИЛЬТРЫ -->
     <TableFilters :columns="Table.columns" :table="Table"></TableFilters>
@@ -454,6 +454,10 @@ export default defineComponent({
 
 .no-wrap-cell {
   white-space: nowrap !important;
+}
+
+.defaultTable {
+  font-family: "Roboto", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .defaultHeader {
