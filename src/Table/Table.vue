@@ -18,83 +18,89 @@
     </TableTasksPanel>
 
     <!-- ТАБЛИЦА-->
-    <div class="mt-2 table table-fixed w-full ">
+    <div class="mt-2 w-full grid-container gap-0" :style="{ '--column-count': columnCount() }">
 
       <!-- ЗАГОЛОВКИ СТОЛБЦОВ-->
-      <div class="table-header-group">
+      <!--<div>-->
 
-        <!-- ЧЕКБОКСЫ -->
-        <div class="table-cell  w-[21px] align-middle">
-          <label class="checkbox" v-if="Table.opts.rowSelectors">
-            <input type='checkbox' @change="CheckboxSelectionChanged($event, true)">
-            <span class='indicator'></span>
-          </label>
-        </div>
-
-        <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'cheader_' + column.name"
-          :class="' defaultHeader ' + column.Table.classesHeader"
-          class=" table-cell align-middle border-r border-r-slate-100 px-2">
-          <span>{{ column.Table.titleCustom !== null ? (column as any).Table.titleCustom(column) : column.Table.title !==
-            '' ?
-            column.Table.title : column.title !== '' ? column.title :
-              column.name }}</span>
-        </div>
-        <div v-if="opts.Edit.can" class="table-cell border-r border-r-slate-100 px-2">
-          <button class="bg-green-600 invisible">
-            Изменить
-          </button>
-        </div>
-        <div v-if="opts.Remove.can" class="table-cell border-r border-r-slate-100 px-2">
-          <button class="bg-green-600 invisible">
-            Удалить
-          </button>
-        </div>
+      <!-- ЧЕКБОКСЫ -->
+      <div class="w-[21px] align-middle col-span-1">
+        <label class="checkbox" v-if="Table.opts.rowSelectors">
+          <input type='checkbox' @change="CheckboxSelectionChanged($event, true)">
+          <span class='indicator'></span>
+        </label>
       </div>
+
+      <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'cheader_' + column.name"
+        :class="' defaultHeader ' + column.Table.classesHeader" class="  align-middle border-r border-r-slate-100 px-2">
+        <span>{{ column.Table.titleCustom !== null ? (column as any).Table.titleCustom(column) : column.Table.title !==
+          '' ?
+          column.Table.title : column.title !== '' ? column.title :
+            column.name }}</span>
+      </div>
+      <div v-if="opts.Edit.can" class=" border-r border-r-slate-100 px-2">
+        <button class="bg-green-600 invisible">
+
+        </button>
+      </div>
+      <div v-if="opts.Remove.can" class=" border-r border-r-slate-100 px-2">
+        <button class="bg-green-600 invisible">
+
+        </button>
+      </div>
+      <!--</div>-->
 
       <!-- СТРОКИ-->
-      <div class="table-row-group text-left">
+      <template v-for="(row) in (Table.Rows.rows)">
+        <template v-if="true">
 
-        <template v-for="(row) in (Table.Rows.rows)">
-          <div :key="'row_' + (row as any).id" class="defaultRow table-row cursor-pointer hover:bg-slate-100" v-if="true">
-
-            <!-- ЧЕКБОКСЫ -->
-            <div class="table-cell align-middle w-[21px]">
-              <label class="checkbox" v-if="Table.opts.rowSelectors">
-                <input type='checkbox' v-model="Table.RowsParams[(row as any)[primaryKey]].selected"
-                  @change="CheckboxSelectionChanged($event, false)">
-                <span class='indicator'></span>
-              </label>
-            </div>
-
-            <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'tc_' + column.name"
-              :class="' defaultCell ' + column.Table.classes"
-              class="table-cell align-middle border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
-              @click="columnClick(row, column)"
-              :style="(column.Table.width === null ? '' : 'width:' + column.Table.width + 'px')">
-
-              <span v-if="!column.Table.isRawValue">{{
-                column.Table.value(row, column) }}</span>
-              <span v-else v-html="column.Table.value(row, column)"></span>
-            </div>
-            <div v-if="opts.Edit.can" class="table-cell border-r border-r-slate-100 px-2 text-center">
-              <button class="px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
-                Изменить
-              </button>
-            </div>
-            <div v-if="opts.Remove.can" class="table-cell border-r border-r-slate-100 px-2 text-center">
-              <button class="px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
-                Удалить
-              </button>
-            </div>
+          <!-- ЧЕКБОКСЫ -->
+          <!-- class="defaultRow cursor-pointer hover:bg-slate-100" -->
+          <div class="col-span-1 align-middle w-[21px]" :key="'chkbox_row_' + (row as any).id">
+            <label class="checkbox" v-if="Table.opts.rowSelectors">
+              <input type='checkbox' v-model="Table.RowsParams[(row as any)[primaryKey]].selected"
+                @change="CheckboxSelectionChanged($event, false)">
+              <span class='indicator'></span>
+            </label>
           </div>
-          <div class="table-cell text-center relative" :key="'row_slot_' + (row as any).id"
-            v-if="opts.onRowClickOpenSlot && !isRowCollapsed(row)">
-            <div class=" mx-auto  no-wrap-cell mobile:w-full text-center">
-              <slot name="RowSubSlot" :row="row" />
-            </div>
+
+          <div v-for="column in Table.columns" v-show="column.Table.isShow"
+            :key="'tc_' + column.name + '_row_' + (row as any).id" :class="' defaultCell ' + column.Table.classes"
+            class=" align-middle border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
+            @click="columnClick(row, column)"
+            :style="(column.Table.width === null ? '' : 'width:' + column.Table.width + 'px')">
+
+            <span v-if="!column.Table.isRawValue">{{
+              column.Table.value(row, column) }}</span>
+            <span v-else v-html="column.Table.value(row, column)"></span>
+          </div>
+          <div v-if="opts.Edit.can" class=" border-r border-r-slate-100 px-2 text-center"
+            :key="'edit_' + 'row_' + (row as any).id">
+            <button class="mobile:hidden px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
+              Изменить
+            </button>
+            <button class="desktop:hidden px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
+              <img src="/src/assets/icons/edit.svg" class="w-4 h-4 fill-white" />
+            </button>
+          </div>
+          <div v-if="opts.Remove.can" class=" border-r border-r-slate-100 px-2 text-center"
+            :key="'delete_' + 'row_' + (row as any).id">
+            <button class="mobile:hidden px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
+              Удалить
+            </button>
+            <button class="desktop:hidden px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
+              <img src="/src/assets/icons/remove.svg" class="w-4 h-4 fill-white" />
+            </button>
           </div>
         </template>
-      </div>
+        <div class=" text-center relative" :style="'grid-column: span ' + columnCount()"
+          :key="'row_slot_' + (row as any).id" v-if="opts.onRowClickOpenSlot && !isRowCollapsed(row)">
+          <div class=" mx-auto  no-wrap-cell mobile:w-full text-center">
+            <slot name="RowSubSlot" :row="row" />
+          </div>
+        </div>
+      </template>
+
 
     </div>
   </div>
@@ -363,6 +369,15 @@ export default defineComponent({
       return Table.RowsParams[row[primaryKey]].collapsed
     }
 
+    const columnCount = (): number => {
+      let cnt = Object.keys(Table.columns).filter(r => Table.columns[r].Table.isShow).length;
+      // Добавляем одно поле для чекбоксов
+      cnt++;
+      // Добавляем поля изменения и удаления
+      if (Table.opts.Add.can) cnt++;
+      if (Table.opts.Edit.can) cnt++;
+      return cnt;
+    }
 
     return {
       Table,
@@ -376,7 +391,8 @@ export default defineComponent({
       getSelector,
       primaryKey,
       columnClick,
-      isRowCollapsed
+      isRowCollapsed,
+      columnCount
     }
 
   },
@@ -426,9 +442,16 @@ export default defineComponent({
 
 })
 
+
+
 </script>
 
 <style scoped lang="scss">
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(var(--column-count), 1fr);
+}
+
 .no-wrap-cell {
   white-space: nowrap !important;
 }
