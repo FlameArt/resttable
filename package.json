@@ -1,6 +1,6 @@
 {
   "name": "flameresttable",
-  "version": "1.0.54",
+  "version": "1.0.55",
   "main": "./src/plugin.ts",
   "repository": {
     "type": "git",
@@ -8,7 +8,8 @@
   },
   "scripts": {
     "push and publish": "git push && npm --no-git-tag-version version patch && npm publish",
-    "install/update": "npm i && npm update --save"
+    "install/update": "npm i && npm update --save",
+    "dev": "vite"
   },
   "dependencies": {
     "@vuepic/vue-datepicker": "^7.2.1",

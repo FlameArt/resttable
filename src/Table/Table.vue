@@ -87,8 +87,9 @@
               </button>
             </div>
           </div>
-          <div :key="'row_slot_' + (row as any).id" v-if="opts.onRowClickOpenSlot && !isRowCollapsed(row)">
-            <div class="table-cell no-wrap-cell">
+          <div class="table-row" :key="'row_slot_' + (row as any).id"
+            v-if="opts.onRowClickOpenSlot && !isRowCollapsed(row)">
+            <div class="table-cell no-wrap-cell mobile:w-full">
               <slot name="RowSubSlot" :row="row" />
             </div>
           </div>
