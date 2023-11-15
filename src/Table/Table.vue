@@ -23,75 +23,90 @@
       <!-- ЗАГОЛОВКИ СТОЛБЦОВ-->
       <!--<div>-->
 
-      <!-- ЧЕКБОКСЫ -->
-      <div class="w-[21px] align-middle col-span-1">
-        <label class="checkbox" v-if="Table.opts.rowSelectors">
-          <input type='checkbox' @change="CheckboxSelectionChanged($event, true)">
-          <span class='indicator'></span>
-        </label>
-      </div>
+      <div class="defaultRow grid w-full" :key="'row_headers'" v-if="true">
+        <!-- ЧЕКБОКСЫ -->
+        <div class="max-w-[21px] align-middle col-span-1" :style="'grid-column:' + 1">
+          <label class="checkbox" v-if="Table.opts.rowSelectors">
+            <input type='checkbox' @change="CheckboxSelectionChanged($event, true)">
+            <span class='indicator'></span>
+          </label>
+        </div>
 
-      <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'cheader_' + column.name"
-        :class="' defaultHeader ' + column.Table.classesHeader"
-        class="  col-span-1 align-middle border-r border-r-slate-100 px-2">
-        <span>{{ column.Table.titleCustom !== null ? (column as any).Table.titleCustom(column) : column.Table.title !==
-          '' ?
-          column.Table.title : column.title !== '' ? column.title :
-            column.name }}</span>
-      </div>
-      <div v-if="opts.Edit.can" class=" col-span-1 border-r border-r-slate-100 px-2">
-        <button class="bg-green-600 invisible">
 
-        </button>
-      </div>
-      <div v-if="opts.Remove.can" class=" col-span-1 border-r border-r-slate-100 px-2">
-        <button class="bg-green-600 invisible">
+        <template v-for="(column, index) in columnsArray">
+          <div v-if="column.Table.isShow" :key="'cheader_' + column.name"
+            :class="' defaultHeader ' + column.Table.classesHeader"
+            class="  col-span-1 align-middle border-r border-r-slate-100 px-2" :style="'grid-column:' + (index + 2)">
+            <span>{{ column.Table.titleCustom !== null ? (column as any).Table.titleCustom(column) : column.Table.title
+              !==
+              '' ?
+              column.Table.title : column.title !== '' ? column.title :
+                column.name }}</span>
+          </div>
+        </template>
+        <div v-if="opts.Edit.can" class=" col-span-1 border-r border-r-slate-100 px-2"
+          :style="'grid-column:' + (columnCount() - 1)">
+          <button class=" bg-green-600 invisible">
 
-        </button>
+          </button>
+        </div>
+        <div v-if="opts.Remove.can" class=" col-span-1 border-r border-r-slate-100 px-2"
+          :style="'grid-column:' + (columnCount())">
+          <button class="bg-green-600 invisible">
+
+          </button>
+        </div>
       </div>
-      <!--</div>-->
 
       <!-- СТРОКИ-->
-      <template v-for="(row) in (Table.Rows.rows)">
+      <template v-for="(  row  ) in   (Table.Rows.rows)  ">
         <template v-if="true">
 
-          <!-- ЧЕКБОКСЫ -->
-          <!-- class="defaultRow cursor-pointer hover:bg-slate-100" -->
-          <div class="col-span-1 align-middle w-[21px]" :key="'chkbox_row_' + (row as any).id">
-            <label class="checkbox" v-if="Table.opts.rowSelectors">
-              <input type='checkbox' v-model="Table.RowsParams[(row as any)[primaryKey]].selected"
-                @change="CheckboxSelectionChanged($event, false)">
-              <span class='indicator'></span>
-            </label>
-          </div>
 
-          <div v-for="column in Table.columns" v-show="column.Table.isShow"
-            :key="'tc_' + column.name + '_row_' + (row as any).id" :class="' defaultCell ' + column.Table.classes"
-            class=" col-span-1 align-middle border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
-            @click="columnClick(row, column)"
-            :style="(column.Table.width === null ? '' : 'width:' + column.Table.width + 'px')">
+          <div class="defaultRow grid w-full" :key="'row_' + (row as any).id" v-if="true">
 
-            <span v-if="!column.Table.isRawValue">{{
-              column.Table.value(row, column) }}</span>
-            <span v-else v-html="column.Table.value(row, column)"></span>
-          </div>
-          <div v-if="opts.Edit.can" class=" col-span-1 border-r border-r-slate-100 px-2 text-center"
-            :key="'edit_' + 'row_' + (row as any).id">
-            <button class="mobile:hidden px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
-              Изменить
-            </button>
-            <button class="desktop:hidden px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
-              <img src="/src/assets/icons/edit.svg" class="w-4 h-4 fill-white" />
-            </button>
-          </div>
-          <div v-if="opts.Remove.can" class=" col-span-1 border-r border-r-slate-100 px-2 text-center"
-            :key="'delete_' + 'row_' + (row as any).id">
-            <button class="mobile:hidden px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
-              Удалить
-            </button>
-            <button class="desktop:hidden px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
-              <img src="/src/assets/icons/remove.svg" class="w-4 h-4 fill-white" />
-            </button>
+            <!-- ЧЕКБОКСЫ -->
+            <!-- class="defaultRow cursor-pointer hover:bg-slate-100" -->
+            <div class="col-span-1 align-middle w-[21px] defaultRow" :key="'chkbox_row_' + (row as any).id"
+              :style="'grid-column:' + 1">
+              <label class="checkbox" v-if="Table.opts.rowSelectors">
+                <input type='checkbox' v-model="Table.RowsParams[(row as any)[primaryKey]].selected"
+                  @change="CheckboxSelectionChanged($event, false)">
+                <span class='indicator'></span>
+              </label>
+            </div>
+
+            <template v-for="  (column, index)   in   columnsArray  ">
+              <div v-if="column.Table.isShow" :class="' defaultCell ' + column.Table.classes"
+                :key="'tc_' + column.name + '_row_' + (row as any).id"
+                class="col-span-1 align-middle border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
+                @click="columnClick(row, column)"
+                :style="'grid-column:' + (index + 2) + ';' + (column.Table.width === null ? '' : 'width:' + column.Table.width + 'px;')">
+
+                <span v-if="!column.Table.isRawValue">{{
+                  column.Table.value(row, column) }}</span>
+                <span v-else v-html="column.Table.value(row, column)"></span>
+              </div>
+            </template>
+
+            <div v-if="opts.Edit.can" class=" col-span-1 border-r border-r-slate-100 px-2 text-center"
+              :style="'grid-column:' + (columnCount() - 1)" :key="'edit_' + 'row_' + (row as any).id">
+              <button class="mobile:hidden px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
+                Изменить
+              </button>
+              <button class="desktop:hidden px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
+                <img src="/src/assets/icons/edit.svg" class="w-4 h-4 fill-white" />
+              </button>
+            </div>
+            <div v-if="opts.Remove.can" class=" col-span-1 border-r border-r-slate-100 px-2 text-center"
+              :key="'delete_' + 'row_' + (row as any).id" :style="'grid-column:' + (columnCount())">
+              <button class="mobile:hidden px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
+                Удалить
+              </button>
+              <button class="desktop:hidden px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
+                <img src="/src/assets/icons/remove.svg" class="w-4 h-4 fill-white" />
+              </button>
+            </div>
           </div>
         </template>
         <div class=" text-center relative" :style="'grid-column: span ' + columnCount()"
@@ -118,7 +133,7 @@
         <slot name="header" />
 
         <!-- КОЛОНКИ ТАБЛИЦЫ-->
-        <label v-for="column in ColumnNames" v-show="Table.columns[column].Popup.isShow" :key="'c' + column"
+        <label v-for="  column   in   ColumnNames  " v-show="Table.columns[column].Popup.isShow" :key="'c' + column"
           class="flex items-stretch justify-center w-full my-1 ml-2">
 
           <!-- Заголовок -->
@@ -145,7 +160,7 @@
           <div v-if="Table.columns[column].Popup.popupType === 'selector'"
             class="flex-1 mr-5 w-full flex flex-col self-stretch"><select v-model="Table.columns[column].Popup.model"
               class="h-full self-stretch py-1 px-2 w-full outline-none border border-slate-100">
-              <option v-for="(selectorVal, selectorKey) in Table.columns[column].Popup.Selector.values"
+              <option v-for="(  selectorVal, selectorKey  ) in   Table.columns[column].Popup.Selector.values  "
                 :key="'sel_' + selectorKey"
                 :value="getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[1]">{{
                   getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[0] }}</option>
@@ -397,6 +412,15 @@ export default defineComponent({
     }
 
   },
+
+  computed: {
+
+    columnsArray: function () {
+      return Object.keys(this.Table.columns).filter(r => this.Table.columns[r].Table.isShow).map(key => this.Table.columns[key])
+    }
+
+  },
+
   methods: {
     fileGetData(thisArr: any, getSource: boolean = true) {
 
@@ -438,7 +462,9 @@ export default defineComponent({
         for (const key in this.Table.RowsParams) {
           this.Table.RowsParams[key].selected = event.target.checked
         }
-    }
+    },
+
+
   },
 
 })
@@ -449,8 +475,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .grid-container {
-  display: grid;
-  grid-template-columns: repeat(var(--column-count), 1fr);
+  //display: grid;
 }
 
 .no-wrap-cell {
@@ -471,11 +496,17 @@ export default defineComponent({
 }
 
 .defaultRow {
+  grid-template-columns: 25px repeat(auto-fill, minmax(1fr, 1fr));
   color: rgb(55, 53, 47);
   font-size: 14px;
   line-height: 16.8px;
   font-family: "Roboto", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-  border: 1px solid rgb(233, 233, 231);
+  border-right: 1px solid rgb(233, 233, 231);
+}
+
+.defaultRow:hover {
+  cursor: pointer;
+  @apply bg-slate-100;
 }
 
 // ЧЕКБОКСЫ
