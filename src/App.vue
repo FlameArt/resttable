@@ -45,7 +45,7 @@ opts.addVirtual('date', { title: 'dt', Filter: { isShow: true, type: 'number' },
 opts.Add.can = true;
 opts.Remove.can = true;
 
-opts.onRowClickOpenSlot = true;
+opts.onRowClickOpenSlot = 'rowspace';
 
 opts.LoadParams.sort = ['-dt1'];
 

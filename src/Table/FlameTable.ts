@@ -220,15 +220,23 @@ export default class FlameTable<T> {
       this.load(rows);
 
     else {
+
       // Файл: скачиваем
-      const url = window.URL.createObjectURL((rows as any).data);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = exportFilename;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      if (typeof this.opts.customDownloadHandler === 'function') {
+        // Кастомный загрузчик
+        this.opts.customDownloadHandler((rows as any).data)
+      }
+      else {
+        // Нативный загрузчик через браузер
+        const url = window.URL.createObjectURL((rows as any).data);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = exportFilename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }
     }
 
   }

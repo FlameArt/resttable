@@ -29,12 +29,24 @@ export default class TableOpts {
   /**
    * Открывать субслот в таблице при клике
    */
-  public onRowClickOpenSlot: boolean = false;
+  public onRowClickOpenSlot: 'popup' | 'rowspace' | 'none' = 'rowspace';
+
+  /**
+   * Клик по строке
+   * @param row 
+   * @returns 
+   */
+  public rowClick = (row: Array<{ [key: string]: IColumn }>) => null
 
   /**
    * Язык
    */
   public lang: 'ru' | 'en' = "ru";
+
+  /**
+   * Кастомный загрузчик файлов
+   */
+  public customDownloadHandler: null | ((data: string) => void) = null;
 
   /**
    * Добавить виртуальный столбец (не будет учтён в запросах, но будет передан на бек для кастомизации фильтров)
