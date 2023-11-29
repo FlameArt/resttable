@@ -120,10 +120,10 @@ const selectAction = () => {
     case 0:
       break;
     case 1:
-      state.Table.exportToXLS(true, null, null, null, state);
+      state.Table.exportToXLS(true);
       break;
     case 2:
-      state.Table.exportToXLS(false, null, null, null, state);
+      state.Table.exportToXLS(false);
       break;
   }
 
