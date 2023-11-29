@@ -46,7 +46,7 @@ export default class TableOpts {
   /**
    * Кастомный загрузчик файлов
    */
-  public customDownloadHandler: null | ((data: string) => void) = null;
+  public customDownloadHandler: null | ((data: Blob, filename: string, mime: string) => void) = null;
 
   /**
    * Добавить виртуальный столбец (не будет учтён в запросах, но будет передан на бек для кастомизации фильтров)

@@ -66,6 +66,11 @@ export default class FlameTable<T> {
   public RowsSelected: Array<T> = [];
 
   /**
+   * Состояние экспорта
+   */
+  public exportStatus: 'completed' | 'exportprocess' | string = 'completed';
+
+  /**
    * Проинициализировать модели
    */
   public constructor(TableModel: Class<T>, opts: TableOpts) {
@@ -221,10 +226,12 @@ export default class FlameTable<T> {
 
     else {
 
+      this.exportStatus = 'completed';
+
       // Файл: скачиваем
       if (typeof this.opts.customDownloadHandler === 'function') {
         // Кастомный загрузчик
-        this.opts.customDownloadHandler((rows as any).data)
+        this.opts.customDownloadHandler((rows as any).data, exportFilename, (rows as any).MimeType)
       }
       else {
         // Нативный загрузчик через браузер
@@ -503,6 +510,8 @@ export default class FlameTable<T> {
       customFilter.fields.push(col.name);
 
     }
+
+    this.exportStatus = 'exportprocess';
 
     // Делаем запрос на отдачу
     this.update(customFilter, customFilter.export.filename ?? null);

@@ -49,6 +49,11 @@
       <!-- ДЕЙСТВИЯ С ОТМЕЧЕННЫМИ -->
       <div class="fc">
         <div>
+          <div class="inline-block">
+            <span v-if="state.Table.exportStatus === 'exportprocess'" class="text-green-600 bg-green-50 px-2 py-1 mx-2">
+              {{ props.table.opts.lang === 'ru' ? 'Загрузка...' : 'Loading...' }}
+            </span>
+          </div>
           <label>
             <select class="minimal text-xs text-center text-slate-500" v-model="state.selectModel" @change="selectAction">
               <option :value="0">{{ state.opts.lang === 'ru' ? 'ДЕЙСТВИЯ' : 'ACTIONS' }}</option>
@@ -106,7 +111,7 @@ const emit = defineEmits(['add'])
 const state = reactive({
   opts: props.table.opts,
   Table: props.table,
-  selectModel: 0
+  selectModel: 0,
 })
 
 const selectAction = () => {
@@ -115,10 +120,10 @@ const selectAction = () => {
     case 0:
       break;
     case 1:
-      state.Table.exportToXLS(true);
+      state.Table.exportToXLS(true, null, null, null, state);
       break;
     case 2:
-      state.Table.exportToXLS();
+      state.Table.exportToXLS(false, null, null, null, state);
       break;
   }
 
