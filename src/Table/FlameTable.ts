@@ -63,7 +63,7 @@ export default class FlameTable<T> {
   /**
    * Выделенные галочками чекбоксы
    */
-  public RowsSelected: Array<T> = reactive([]);
+  public RowsSelected: Array<T> = [];
 
   /**
    * Состояние экспорта

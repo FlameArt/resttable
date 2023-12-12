@@ -251,7 +251,7 @@ export default defineComponent({
 
   setup(props) {
 
-    const Table = reactive(new FlameTable(props.model as any, props.opts)) as FlameTable<any>;
+    const Table = (new FlameTable(props.model as any, props.opts)) as FlameTable<any>;
 
     const FlameTableModal = ref<InstanceType<typeof ModalVue>>();
 
@@ -422,11 +422,13 @@ export default defineComponent({
     },
 
     CheckboxSelectionChanged(event: any, all: boolean = false) {
-      this.Table.getSelectedRows();
       if (all === true)
         for (const key in this.Table.RowsParams) {
           this.Table.RowsParams[key].selected = event.target.checked
         }
+
+      this.Table.getSelectedRows();
+
     }
   },
 
