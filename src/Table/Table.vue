@@ -251,7 +251,7 @@ export default defineComponent({
 
   setup(props) {
 
-    const Table = new FlameTable(props.model as any, props.opts);
+    const Table = reactive(new FlameTable(props.model as any, props.opts)) as FlameTable<any>;
 
     const FlameTableModal = ref<InstanceType<typeof ModalVue>>();
 

@@ -1,6 +1,6 @@
 {
   "name": "flameresttable",
-  "version": "1.0.73",
+  "version": "1.0.75",
   "main": "./src/plugin.ts",
   "repository": {
     "type": "git",

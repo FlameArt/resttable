@@ -63,7 +63,7 @@ export default class FlameTable<T> {
   /**
    * Выделенные галочками чекбоксы
    */
-  public RowsSelected: Array<T> = [];
+  public RowsSelected: Array<T> = reactive([]);
 
   /**
    * Состояние экспорта
@@ -437,6 +437,8 @@ export default class FlameTable<T> {
       if (el.selected)
         res.push(el.item)
     }
+    this.RowsSelected.splice(0);
+    this.RowsSelected.push(...res);
     return res;
   }
 
