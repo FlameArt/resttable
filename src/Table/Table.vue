@@ -429,6 +429,8 @@ export default defineComponent({
 
       this.Table.getSelectedRows();
 
+      // ТУТ СОБЫТИЕ ОБ ИЗМЕНЕНИИ ПРИХОДИТ В ИСТАНС РАНЬШЕ САМОГО ИЗМЕНЕНИЯ МАССИВА
+
     }
   },
 

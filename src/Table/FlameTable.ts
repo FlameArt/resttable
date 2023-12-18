@@ -468,7 +468,7 @@ export default class FlameTable<T> {
    * @param filename 
    * @param arr 
    */
-  public exportToXLS(onlySelected: boolean = false, filename: string | null = null, arr: any = null, columnList: Array<string> | null = null) {
+  public exportToXLS(onlySelected: boolean = false, filename: string | null = null, arr: any = null, columnList: Array<string> | null = null): Promise<void> {
 
     const tClass = Object.getPrototypeOf(this.model).constructor;
     const indexKey = tClass.primaryKeys[0];
@@ -516,7 +516,7 @@ export default class FlameTable<T> {
     this.exportStatus = 'exportprocess';
 
     // Делаем запрос на отдачу
-    this.update(customFilter, customFilter.export.filename ?? null);
+    return this.update(customFilter, customFilter.export.filename ?? null);
 
   }
 
