@@ -47,7 +47,7 @@
     <div>
 
       <!-- ДЕЙСТВИЯ С ОТМЕЧЕННЫМИ -->
-      <div class="fc">
+      <div class="fc" v-show="state.opts.Export.isShow">
         <div>
           <div class="inline-block">
             <span v-if="state.Table.exportStatus === 'exportprocess'" class="text-green-600 bg-green-50 px-2 py-1 mx-2">

@@ -15,7 +15,7 @@
         </div>
 
         <!-- ЦИФРЫ -->
-        <div class="fc mobile:w-full px-2" v-if="col.Filter.type === 'number' || col.Filter.type === 'fixed'">
+        <div class="fc mobile:w-full px-2" v-if="col.Filter.type === 'number'">
           <input class="max-w-[100px] flex-1 outline-none border border-slate-500 px-2 py-1"
             :placeholder="'From ' + col.title ?? col.name" type="text" @keyup="update()"
             v-model="col.Filter.valueRangeNumbers.from" />

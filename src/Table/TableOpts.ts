@@ -84,10 +84,11 @@ export default class TableOpts {
   }
 
   public Export = {
+    isShow: true,
     CSV: {
       can: false,
       buttonTitle: "Export to CSV",
-    }
+    },
   }
 
   public Add = {

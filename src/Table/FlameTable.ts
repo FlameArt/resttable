@@ -219,10 +219,14 @@ export default class FlameTable<T> {
 
     const rows: Rows<T> = await (this.model as any).constructor.all(merge({}, this.opts.LoadParams, filters, { page: this.Pager.page, perPage: this.Pager.perPage }));
 
-    if (exportFilename === null)
+    if (exportFilename === null) {
 
       // Строки: загружаем
       this.load(rows);
+
+
+
+    }
 
     else {
 

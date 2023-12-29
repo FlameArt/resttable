@@ -33,18 +33,19 @@
 
         <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'cheader_' + column.name"
           :class="' defaultHeader ' + column.Table.classesHeader"
-          class=" table-cell align-middle border-r border-r-slate-100 px-2">
+          class=" table-cell align-middle border-r border-r-slate-100 px-2"
+          :style="(column.Table.width === null ? '' : 'width:' + column.Table.width + 'px')">
           <span>{{ column.Table.titleCustom !== null ? (column as any).Table.titleCustom(column) : column.Table.title !==
             '' ?
             column.Table.title : column.title !== '' ? column.title :
               column.name }}</span>
         </div>
-        <div v-if="opts.Edit.can" class="table-cell border-r border-r-slate-100 px-2">
+        <div v-if="opts.Edit.can" class="table-cell  w-[93px] border-r border-r-slate-100 px-2">
           <button class="bg-green-600 invisible">
             Изменить
           </button>
         </div>
-        <div v-if="opts.Remove.can" class="table-cell border-r border-r-slate-100 px-2">
+        <div v-if="opts.Remove.can" class="table-cell w-[93px] border-r border-r-slate-100 px-2">
           <button class="bg-green-600 invisible">
             Удалить
           </button>
@@ -76,12 +77,12 @@
                 column.Table.value(row, column) }}</span>
               <span v-else v-html="column.Table.value(row, column)"></span>
             </div>
-            <div v-if="opts.Edit.can" class="table-cell border-r border-r-slate-100 px-2 text-center">
+            <div v-if="opts.Edit.can" class="table-cell w-[93px]   border-r border-r-slate-100 px-2 text-center">
               <button class="px-2 py-1 bg-green-600 text-white my-1" @click="edit(row)">
                 Изменить
               </button>
             </div>
-            <div v-if="opts.Remove.can" class="table-cell border-r border-r-slate-100 px-2 text-center">
+            <div v-if="opts.Remove.can" class="table-cell w-[93px]   border-r border-r-slate-100 px-2 text-center">
               <button class="px-2 py-1 bg-gray-600 opacity-30 text-white my-1" @click="deleteRow(row)">
                 Удалить
               </button>
