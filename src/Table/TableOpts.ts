@@ -49,6 +49,12 @@ export default class TableOpts {
   public customDownloadHandler: null | ((data: Blob, filename: string, mime: string) => void) = null;
 
   /**
+   * Функция, выполняемая перед обновлением данных и при возврате false - запрещающая обновление
+   * @returns 
+   */
+  public onBeforeUpdate: ((filters: object, isExport: boolean) => boolean) = () => true;
+
+  /**
    * Добавить виртуальный столбец (не будет учтён в запросах, но будет передан на бек для кастомизации фильтров)
    * @param ColumnName 
    * @param mergingOpts 

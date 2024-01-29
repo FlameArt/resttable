@@ -217,6 +217,10 @@ export default class FlameTable<T> {
     // Дополняем загрузочные параметры фильтрами
     const filters = merge(this.applyFiltersParams(), CustomLoadParams);
 
+    // Операции перед обновлением
+    const isNeedUpdate = this.opts.onBeforeUpdate(filters, exportFilename !== null);
+    if (!isNeedUpdate) return;
+
     const rows: Rows<T> = await (this.model as any).constructor.all(merge({}, this.opts.LoadParams, filters, { page: this.Pager.page, perPage: this.Pager.perPage }));
 
     if (exportFilename === null) {
