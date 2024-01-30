@@ -364,6 +364,17 @@ export interface IColumn {
      */
     classes?: string,
 
+    /**
+      * Заголовок фильтра. null - заголовок равен title общему
+      */
+    title: string | null,
+
+    /**
+     * Классы для заголовка
+     */
+    titleClasses: string
+
+
   },
 
   /**
