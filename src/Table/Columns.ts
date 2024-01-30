@@ -167,6 +167,16 @@ export class Column implements IColumn {
      */
     classes: '',
 
+    /**
+     * Заголовок фильтра. null - заголовок равен title общему
+     */
+    title: null,
+
+    /**
+     * Классы для заголовка
+     */
+    titleClasses: ''
+
   }
 
   public Popup = {

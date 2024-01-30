@@ -5,7 +5,8 @@
       class="py-1 mobile:w-full mobile:px-2 mobile:block desktop:inline-block desktop:mx-2">
 
       <div class="fc flex-col ">
-        <div class="text-xs text-slate-400">{{ col.title.toUpperCase() ?? col.name }}</div>
+        <div :class="col.Filter.titleClasses" class="text-xs text-slate-400">{{ col.Filter.title ??
+          col.title.toUpperCase() ?? col.name }}</div>
 
         <!-- ТЕКСТ -->
         <div class="mobile:w-full"
