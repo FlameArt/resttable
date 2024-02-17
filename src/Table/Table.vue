@@ -18,7 +18,7 @@
     </TableTasksPanel>
 
     <!-- ТАБЛИЦА-->
-    <div class="mt-2 table table-fixed w-full ">
+    <div ref="MainTableElement" class="mt-2 table table-fixed w-full ">
 
       <!-- ЗАГОЛОВКИ СТОЛБЦОВ-->
       <div class="table-header-group">
@@ -101,7 +101,7 @@
   </div>
 
   <!-- ПОСТРАНИЧНАЯ РАЗБИВКА -->
-  <Paginator class="mt-3" :table="Table" />
+  <Paginator class="mt-3" :table="Table" v-if="opts.Pagination.type === 'pages'" />
 
   <!-- МОДАЛКА ДОБАВЛЕНИЯ-->
   <ModalVue ref="FlameTableModal">
@@ -258,6 +258,8 @@ export default defineComponent({
 
     const ColumnNames = Object.keys(Table.model as any);
 
+    // Добавляем событие скролла
+
     /**
      * Добавление новой записи
      */
@@ -370,6 +372,9 @@ export default defineComponent({
       return Table.RowsParams[row[primaryKey]].collapsed
     }
 
+    const MainTableElement = ref();
+
+
 
     return {
       Table,
@@ -383,11 +388,43 @@ export default defineComponent({
       getSelector,
       primaryKey,
       columnClick,
-      isRowCollapsed
+      isRowCollapsed,
+      MainTableElement
     }
 
   },
+
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+
   methods: {
+
+
+    // подскролл таблицы при докручивании до низа
+    handleScroll() {
+
+      if (this.opts.Pagination.type !== 'scrollable') return;
+      if (this.Table.loadingStatus === 'process') return;
+
+      const rect = this.MainTableElement.getBoundingClientRect();
+      const bottom = rect.bottom;
+
+      // Получаем высоту окна просмотра
+      const windowHeight = window.innerHeight;
+
+      // Проверяем, достиг ли скролл нижней грани элемента
+      if (bottom <= windowHeight) {
+        // Грузим на одну страницу дальше, т.к. тут отсчёт начинается с 0, то +2
+        this.Table.update({ page: this.Table.Pager.page + 2, perPage: 20 });
+      }
+
+    },
+
     fileGetData(thisArr: any, getSource: boolean = true) {
 
 

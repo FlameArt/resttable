@@ -71,6 +71,16 @@ export default class FlameTable<T> {
   public exportStatus: 'completed' | 'exportprocess' | string = 'completed';
 
   /**
+   * Состояние загрузки
+   */
+  public loadingStatus: 'completed' | 'process' | string = 'process';
+
+  /**
+   * Последний прогруженный элемент
+   */
+  public lastLoadedID: number = 0;
+
+  /**
    * Проинициализировать модели
    */
   public constructor(TableModel: Class<T>, opts: TableOpts) {
@@ -116,18 +126,26 @@ export default class FlameTable<T> {
     // Предзагружаем колонки
     this.preloadRelated()
 
+
+
   }
 
   /**
    * Загрузить результаты от RESTа в таблицу
    * @param rows Отданный объект
    */
-  public load(rows: Rows<T>) {
+  public load(rows: Rows<T>, isAppend: boolean) {
 
     rows.pages = rows.pages ?? { count: 0, page: 1, perPage: 1, total: 0 };
 
     if (rows.data) {
-      this.Rows.rows = (rows.data ?? []) as any;
+
+      // Заполняем массив
+      if (isAppend)
+        this.Rows.rows.push(...(rows.data ?? []) as any);
+      else
+        this.Rows.rows = (rows.data ?? []) as any;
+
       Object.keys(this.Pager).forEach((key) => (this.Pager as any)[key] = (rows.pages as any)[key])
 
       // удаляем чтобы при перезагрузке не сохранялось состояние пред. строк
@@ -212,7 +230,7 @@ export default class FlameTable<T> {
    * @param CustomLoadParams Применить кастомные параметры загрузки
    * @param exportFilename имя файла для экспорта, если указано, данные будут выгружены
    */
-  public async update(CustomLoadParams: ITableLoadParams = {}, exportFilename: string | null = null) {
+  public async update(CustomLoadParams: ITableLoadParams = {}, exportFilename: string | null = null, from: 'pager' | 'filters' = 'pager') {
 
     // Дополняем загрузочные параметры фильтрами
     const filters = merge(this.applyFiltersParams(), CustomLoadParams);
@@ -221,14 +239,25 @@ export default class FlameTable<T> {
     const isNeedUpdate = this.opts.onBeforeUpdate(filters, exportFilename !== null);
     if (!isNeedUpdate) return;
 
-    const rows: Rows<T> = await (this.model as any).constructor.all(merge({}, this.opts.LoadParams, filters, { page: this.Pager.page, perPage: this.Pager.perPage }));
+    // Запускаем прогрузку
+    this.loadingStatus = 'process';
+
+    // совмещаем все параметры загрузки
+    const allParams = merge({}, { page: this.Pager.page, perPage: this.Pager.perPage }, this.opts.LoadParams, filters);
+
+    // Если всё уже загружено
+    if (this.Pager.total !== 0 && allParams.page > this.Pager.total / this.Pager.perPage) return;
+
+    const rows: Rows<T> = await (this.model as any).constructor.all(allParams);
 
     if (exportFilename === null) {
 
+      // Режим прогрузки
+      let loadModeAppend: boolean = false;
+      if (this.opts.Pagination.type === 'scrollable' && from === 'pager') loadModeAppend = true;
+
       // Строки: загружаем
-      this.load(rows);
-
-
+      this.load(rows, loadModeAppend);
 
     }
 
@@ -253,6 +282,8 @@ export default class FlameTable<T> {
         document.body.removeChild(a);
       }
     }
+
+    this.loadingStatus = 'completed'
 
   }
 

@@ -138,13 +138,12 @@ export default class TableOpts {
 
   }
 
-
   /**
-   * Запрос на поиск записей
+   * Постраничная разбивка
    */
-  public find = () => {
-
-  }
+  public Pagination: {
+    type: 'scrollable' | 'pages'
+  } = { type: 'pages' }
 
 
 }

@@ -98,7 +98,7 @@ const update = (col?: Column) => {
     col.Filter.valueRange = (col.Filter.valueString as any).map((r: ITableSelectorItem) => r.id);
   }
 
-  props.table.update();
+  props.table.update({}, null, 'filters');
 
 }
 

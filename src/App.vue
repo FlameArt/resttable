@@ -47,6 +47,8 @@ opts.Remove.can = true;
 
 opts.onRowClickOpenSlot = 'rowspace';
 
+opts.Pagination.type = 'scrollable';
+
 opts.LoadParams.sort = ['-dt1'];
 
 </script>
