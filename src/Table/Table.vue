@@ -35,10 +35,11 @@
           :class="' defaultHeader ' + column.Table.classesHeader"
           class=" table-cell align-middle border-r border-r-slate-100 px-2"
           :style="(column.Table.width === null ? '' : 'width:' + column.Table.width + 'px')">
-          <span>{{ column.Table.titleCustom !== null ? (column as any).Table.titleCustom(column) : column.Table.title !==
-            '' ?
-            column.Table.title : column.title !== '' ? column.title :
-              column.name }}</span>
+          <span>{{ column.Table.titleCustom !== null ? (column as any).Table.titleCustom(column) : column.Table.title
+      !==
+      '' ?
+      column.Table.title : column.title !== '' ? column.title :
+        column.name }}</span>
         </div>
         <div v-if="opts.Edit.can" class="table-cell  w-[93px] border-r border-r-slate-100 px-2">
           <button class="bg-green-600 invisible">
@@ -56,7 +57,8 @@
       <div class="table-row-group text-left">
 
         <template v-for="(row) in (Table.Rows.rows)">
-          <div :key="'row_' + (row as any).id" class="defaultRow table-row cursor-pointer hover:bg-slate-100" v-if="true">
+          <div :key="'row_' + (row as any).id" class="defaultRow table-row cursor-pointer hover:bg-slate-100"
+            v-if="true">
 
             <!-- ЧЕКБОКСЫ -->
             <div class="table-cell align-middle w-[21px]">
@@ -74,7 +76,7 @@
               :style="(column.Table.width === null ? '' : 'width:' + column.Table.width + 'px')">
 
               <span v-if="!column.Table.isRawValue">{{
-                column.Table.value(row, column) }}</span>
+      column.Table.value(row, column) }}</span>
               <span v-else v-html="column.Table.value(row, column)"></span>
             </div>
             <div v-if="opts.Edit.can" class="table-cell w-[93px]   border-r border-r-slate-100 px-2 text-center">
@@ -118,7 +120,7 @@
           <!-- Заголовок -->
           <div class="text-left px-2 py-1 bg-slate-100" style="width: 110px">
             <div>{{ Table.columns[column].Popup.title !== '' ? Table.columns[column].Popup.title === '' :
-              Table.columns[column].title !== '' ? Table.columns[column].title : Table.columns[column].name }}</div>
+      Table.columns[column].title !== '' ? Table.columns[column].title : Table.columns[column].name }}</div>
             <div class="text-xs text-slate-400">{{ Table.columns[column].Popup.desc }}</div>
           </div>
 
@@ -142,7 +144,7 @@
               <option v-for="(selectorVal, selectorKey) in Table.columns[column].Popup.Selector.values"
                 :key="'sel_' + selectorKey"
                 :value="getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[1]">{{
-                  getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[0] }}</option>
+      getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[0] }}</option>
             </select>
           </div>
 
@@ -419,8 +421,8 @@ export default defineComponent({
 
       // Проверяем, достиг ли скролл нижней грани элемента
       if (bottom <= windowHeight) {
-        // Грузим на одну страницу дальше, т.к. тут отсчёт начинается с 0, то +2
-        this.Table.update({ page: this.Table.Pager.page + 2, perPage: 20 });
+        // Грузим на одну страницу дальше
+        this.Table.update({ page: this.Table.Pager.page + 1, perPage: this.Table.Pager.perPage });
       }
 
     },

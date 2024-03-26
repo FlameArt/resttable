@@ -134,7 +134,7 @@ export default class FlameTable<T> {
    * Загрузить результаты от RESTа в таблицу
    * @param rows Отданный объект
    */
-  public load(rows: Rows<T>, isAppend: boolean) {
+  public load(rows: Rows<T>, isAppend: boolean = false) {
 
     rows.pages = rows.pages ?? { count: 0, page: 1, perPage: 1, total: 0 };
 
@@ -239,14 +239,15 @@ export default class FlameTable<T> {
     const isNeedUpdate = this.opts.onBeforeUpdate(filters, exportFilename !== null);
     if (!isNeedUpdate) return;
 
-    // Запускаем прогрузку
-    this.loadingStatus = 'process';
 
     // совмещаем все параметры загрузки
     const allParams = merge({}, { page: this.Pager.page, perPage: this.Pager.perPage }, this.opts.LoadParams, filters);
 
     // Если всё уже загружено
-    if (this.Pager.total !== 0 && allParams.page > this.Pager.total / this.Pager.perPage) return;
+    if (this.Pager.total !== 0 && allParams.page - 1 > this.Pager.total / this.Pager.perPage) return;
+
+    // Запускаем прогрузку
+    this.loadingStatus = 'process';
 
     const rows: Rows<T> = await (this.model as any).constructor.all(allParams);
 
