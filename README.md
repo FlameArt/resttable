@@ -9,6 +9,14 @@
     opts.Popup.beforeEdit = async (row: any, table: typeof FlameTable.prototype): Promise<boolean> => {
     }
 
+# Row slot
+Слот для цельной строки таблицы
+Передан параметр с данными строки `row`
+
+# TableHeaders slot
+Слот для строки заголовков
+Передан параметр `columns`
+
 ### RowSubSlot
 Это слот для клика по строке таблицы, если включён параметр `opts.onRowClickOpenSlot`
 
