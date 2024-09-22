@@ -93,13 +93,13 @@
                 </button>
               </div>
             </div>
-            <div class="table-cell text-center relative" :key="'row_slot_' + (row as any).id"
-              v-if="opts.onRowClickOpenSlot && !isRowCollapsed(row)">
-              <div class=" mx-auto  no-wrap-cell mobile:w-full text-center">
-                <slot name="RowSubSlot" :row="row" />
-              </div>
-            </div>
           </slot>
+          <div class="table-cell text-center relative" :key="'row_slot_' + (row as any).id"
+            v-if="opts.onRowClickOpenSlot && !isRowCollapsed(row)">
+            <div class=" mx-auto  no-wrap-cell mobile:w-full text-center">
+              <slot name="RowSubSlot" :row="row" />
+            </div>
+          </div>
         </template>
 
       </div>
