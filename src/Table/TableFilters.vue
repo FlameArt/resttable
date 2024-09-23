@@ -11,14 +11,14 @@
         <!-- ТЕКСТ -->
         <div class="mobile:w-full"
           v-if="col.Filter.type === 'text' || col.Filter.type === 'fixed' || col.Filter.type === 'fulltext'">
-          <input class="mobile:w-full outline-none border border-slate-500 px-2 py-1" :placeholder="col.title ?? col.name"
-            type="text" @keyup="update()" v-model="col.Filter.valueString" />
+          <input class="mobile:w-full outline-none border border-slate-500 px-2 py-1"
+            :placeholder="col.title ?? col.name" type="text" @keyup="update()" v-model="col.Filter.valueString" />
         </div>
 
         <!-- ЦИФРЫ -->
         <div class="fc mobile:w-full px-2" v-if="col.Filter.type === 'number'">
           <input class="max-w-[100px] flex-1 outline-none border border-slate-500 px-2 py-1"
-            :placeholder="'From ' + col.title ?? col.name" type="text" @keyup="update()"
+            :placeholder="'From ' + (col.title ?? col.name)" type="text" @keyup="update()"
             v-model="col.Filter.valueRangeNumbers.from" />
           <span class="mx-2"> - </span>
           <input class="max-w-[100px] flex-1 outline-none border border-slate-500 px-2 py-1"
@@ -49,7 +49,8 @@
           <Datepicker class="mobile:w-full" v-if="col.Filter.type === 'date'" v-model="col.Filter.valueString"
             :auto-apply="true" :enable-time-picker="false" @update:model-value="update()" :teleport="true"></Datepicker>
           <Datepicker class="mobile:w-full" v-if="col.Filter.type === 'daterange'" v-model="col.Filter.valueRange"
-            :range="true" :enable-time-picker="false" :auto-apply="true" @update:model-value="update()" :teleport="true">
+            :range="true" :enable-time-picker="false" :auto-apply="true" @update:model-value="update()"
+            :teleport="true">
           </Datepicker>
         </div>
       </div>
