@@ -184,6 +184,9 @@ export class Column implements IColumn {
     // Тут привязка к реальным данным
     model: "",
 
+    // Тут модель для файлов
+    fileModel: null as any,
+
     // Заголовок поля в попапе
     title: "",
 
@@ -418,6 +421,9 @@ export interface IColumn {
 
     // Тут привязка к реальным данным
     model?: any,
+
+    // Тут модель для файлов
+    fileModel?: any,
 
     // Заголовок поля в попапе
     title?: string,

@@ -401,7 +401,8 @@ export default class FlameTable<T> {
     // TODO: убрать пустой массив т.к. при добавлении он не нужен или прикрепить реактивную модель?
     if (await this.opts.Popup.beforeAdd({}, this) === false) { return null; }
 
-    const res: SavedObject<T> = await Object.getPrototypeOf(this.model).constructor.create(this.getColumnsForUpdate('add'));
+    const cols = await (window as any).REST.prepare(this.getColumnsForUpdate('add'), true);
+    const res: SavedObject<T> = await Object.getPrototypeOf(this.model).constructor.create(cols);
 
     if (!res.ok || !res.data) {
       throw res;
@@ -422,8 +423,11 @@ export default class FlameTable<T> {
     // Сперва предобработка
     if (await this.opts.Popup.beforeEdit(columns, this) === false) { return null; }
 
+    // Подготовка к загрузке
+    const preparedCols = await (window as any).REST.prepare(columns, true);
+
     // Сохраняем
-    const res: SavedObject<T> = await tClass.edit(columns[indexKey], columns);
+    const res: SavedObject<T> = await tClass.edit(columns[indexKey], preparedCols);
 
     if (!res.ok) {
       throw res;
@@ -461,7 +465,12 @@ export default class FlameTable<T> {
       if (mode === 'add' && !this.columns[key].Popup.isSendFromAdd) continue;
       if (mode === 'edit' && !this.columns[key].Popup.isSendFromEdit) continue;
       // TODO: здесь может быть полезно сохранять пустую строку
-      if (this.columns[key].Popup.model !== '') { res[key] = this.columns[key].Popup.model }
+      if (this.columns[key].Popup.model !== '') { 
+        if (this.columns[key].Popup.fileModel !== null)
+          res[key] = this.columns[key].Popup.fileModel
+        else
+          res[key] = this.columns[key].Popup.model 
+      }
     }
     return res;
   }
