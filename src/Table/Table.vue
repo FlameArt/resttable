@@ -327,7 +327,7 @@ export default defineComponent({
       Table.columns[column].Popup.model = ev;
       const prepared = (await REST.prepare({ myParam: ev })).myParam;
       Table.columns[column].Popup.model = prepared
-      Table.columns[column].Popup.fileModel = { myParam: ev }
+      Table.columns[column].Popup.fileModel = ev
     }
 
     /*
