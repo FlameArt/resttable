@@ -444,8 +444,10 @@ export default class FlameTable<T> {
 
     if (res.data) {
       const findedIdx = this.Rows.rows.findIndex((row: any) => row[indexKey] === (res.data as any)[indexKey])
-      if (findedIdx !== -1)
+      if (findedIdx !== -1) {
         this.Rows.rows[findedIdx] = reactive(res.data as any);
+        this.RowsParams[columns[indexKey]].previousAttributes = res.data;
+      }
     }
 
     return res;
@@ -468,8 +470,7 @@ export default class FlameTable<T> {
         case 'file':
         case 'image':
           // Неизменный объект будет как простой объект, а не событие, File итд
-          debugger;
-          if (row[key] === null || isPlainObject(row[key])) continue;
+          if (row[key] === null || typeof row[key]?.[0]?.['id'] === 'string' && typeof row[key]?.[0]?.['file'] === 'string' || isPlainObject(row[key])) continue;
           break;
         case 'text':
         case 'string':
