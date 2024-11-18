@@ -4,4 +4,7 @@ export default class TableRowParams {
    public selected: boolean = false;
    public item: any = null;
 
+   // Аттрибуты до сохранения новых
+   public previousAttributes: {[key:string]:any} = {};
+
 }

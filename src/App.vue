@@ -27,7 +27,7 @@ opts.set('name', { title: 'Название' });
 opts.set('dt1', { title: 'Дата 1' });
 opts.set('dt2', { title: 'Дата 2' });
 opts.set('id', { title: 'ID', Selector: { model: Relatedtable }, Filter: { isShow: true, type: 'selector', selector: { multiselect: true, mode: 'vertical' } } });
-opts.set('file', { title: 'файл', Filter: { isShow: false } });
+opts.set('file', { title: 'файл', Popup: {popupType: 'image'}, Filter: { isShow: false } });
 opts.set("name", {
   title: 'Название', Table:
   {

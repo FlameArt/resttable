@@ -5,6 +5,7 @@ import { reactive, UnwrapRef } from 'vue';
 import merge from 'lodash-es/merge'
 import ITableLoadParams from './TableLoadParams';
 import TableRowParams from './TableRowParams';
+import cloneDeep from 'lodash-es/cloneDeep';
 
 // Подгрузчик типа класса
 type Class<T> = new (...args: any[]) => T
@@ -162,6 +163,7 @@ export default class FlameTable<T> {
         if (typeof this.RowsParams[row[pk]] === 'undefined') {
           const newParam = new TableRowParams;
           newParam.item = row;
+          newParam.previousAttributes = cloneDeep(row);
           this.RowsParams[row[pk]] = newParam;
         }
       })
@@ -423,8 +425,15 @@ export default class FlameTable<T> {
     // Сперва предобработка
     if (await this.opts.Popup.beforeEdit(columns, this) === false) { return null; }
 
+    // Убираем поля, которые не требуют изменения
+    const cleanedCols = this.RemoveUnchagedFields(columns);
+
+    // Если изменений нет, то не посылаем
+    if (Object.keys(cleanedCols).length === 0) return null;
+
     // Подготовка к загрузке
-    const preparedCols = await (window as any).REST.prepare(columns, true);
+    const preparedCols = await (window as any).REST.prepare(cleanedCols, true);
+
 
     // Сохраняем
     const res: SavedObject<T> = await tClass.edit(columns[indexKey], preparedCols);
@@ -443,6 +452,42 @@ export default class FlameTable<T> {
 
   }
 
+  private RemoveUnchagedFields(row: { [key: string]: any }) {
+
+    // primarykey
+    const pk = (this.model as any).constructor.primaryKeys[0];
+    const isPlainObject = (obj: any) => typeof obj === 'object' && obj !== null && Object.getPrototypeOf(obj) === Object.prototype;
+
+    // Теперь не отправляем на обнову значения, что не обновились
+    const cleanRow: { [key: string]: any } = {};
+    for (const key in this.columns) {
+
+      const cParam = this.RowsParams[row[pk]];
+      switch (this.columns[key].Popup.popupType) {
+
+        case 'file':
+        case 'image':
+          // Неизменный объект будет как простой объект, а не событие, File итд
+          debugger;
+          if (row[key] === null || isPlainObject(row[key])) continue;
+          break;
+        case 'text':
+        case 'string':
+        case 'date':
+        case 'selector':
+          if (cParam.previousAttributes[key] === row[key]) continue;
+          break;
+        default:
+      }
+
+      cleanRow[key] = row[key];
+    }
+
+    return cleanRow;
+
+  }
+
+  
 
   public async remove(row: T): Promise<SavedObject<T>> {
 
@@ -462,15 +507,18 @@ export default class FlameTable<T> {
   private getColumnsForUpdate(mode: "add" | "edit") {
     const res: { [key: string]: string } = {};
     for (const key in this.columns) {
+
       if (mode === 'add' && !this.columns[key].Popup.isSendFromAdd) continue;
       if (mode === 'edit' && !this.columns[key].Popup.isSendFromEdit) continue;
-      // TODO: здесь может быть полезно сохранять пустую строку
-      if (this.columns[key].Popup.model !== '') { 
-        if (this.columns[key].Popup.fileModel !== null)
-          res[key] = this.columns[key].Popup.fileModel
-        else
-          res[key] = this.columns[key].Popup.model 
-      }
+
+      // пропускаем виртуальные поля
+      if (this.columns[key].isVirtual) continue;
+
+      if (this.columns[key].Popup.fileModel !== null)
+        res[key] = this.columns[key].Popup.fileModel
+      else
+        res[key] = this.columns[key].Popup.model
+
     }
     return res;
   }
