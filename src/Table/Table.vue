@@ -40,7 +40,7 @@
               !==
               '' ?
               column.Table.title : column.title !== '' ? column.title :
-                column.name }}</span>
+              column.name }}</span>
           </div>
           <div v-if="opts.Edit.can" class="table-cell  w-[93px] border-r border-r-slate-100 px-2">
             <button class="bg-green-600 invisible">
@@ -129,8 +129,7 @@
             <div class="text-xs text-slate-400">{{ Table.columns[column].Popup.desc }}</div>
           </div>
 
-          <div
-            v-if="Table.columns[column].Popup.popupType === 'string' || Table.columns[column].Popup.popupType === 'text'"
+          <div v-if="Table.columns[column].Popup.popupType === 'string'"
             class="flex-1 mr-5 w-full flex flex-col self-stretch">
             <input v-model="Table.columns[column].Popup.model"
               class="h-full self-stretch py-1 px-2 w-full outline-none border border-slate-100" type="text"
@@ -149,7 +148,7 @@
               <option v-for="(selectorVal, selectorKey) in Table.columns[column].Popup.Selector.values"
                 :key="'sel_' + selectorKey"
                 :value="getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[1]">{{
-                  getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[0] }}</option>
+                getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[0] }}</option>
             </select>
           </div>
 
@@ -198,7 +197,22 @@
             </label>
           </div>
 
+          <div class="flex-1 mr-5 w-full flex flex-col self-stretch"
+            v-if="Table.columns[column].Popup.popupType === 'text'">
+            {{ Table.columns[column].Popup.model }}
+            <EditorPopup :value="Table.columns[column].Popup.model" @save="PopupTextSaved" :column="column" :title="Table.columns[column].Popup.title ?? column">
+
+            </EditorPopup>
+          </div>
+
+          <!-- ОШИБКИ СОХРАНЕНИЯ -->
+          <div class="mx-2 my-1 text-red-600" v-if="(typeof popupErrors[column]!== 'undefined')">{{ popupErrors[column]
+            }}</div>
+
         </label>
+
+        <div class="text-red-600 mx-2 my-1" v-if="(typeof popupErrors['globalErrorStack']!== 'undefined')">{{
+          popupErrors['globalErrorStack'] }}</div>
 
         <!-- КНОПКИ СОХРАНЕНИЯ-->
         <div class="flex w-full mt-3 mb-2 justify-between items-center">
@@ -226,6 +240,7 @@ import { XCircleIcon } from '@icons/24/solid'
 import { computed } from '@vue/reactivity';
 import { Column, IColumn } from './Columns';
 import { defineComponent } from 'vue';
+
 import TableOpts from './TableOpts';
 import FlameTable from './FlameTable';
 import ModalVue from './../components/default/Modal.vue';
@@ -238,10 +253,11 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import { isNumber } from 'lodash';
 import 'vue-select/dist/vue-select.css';
 import TableTasksPanel from './TableTasksPanel.vue';
-
+import EditorPopup from '@/components/editor/EditorPopup.vue';
+import { title } from 'process';
 
 export default defineComponent({
-  components: { ModalVue, Paginator, Datepicker, TableFilters, TableTasksPanel },
+  components: { ModalVue, Paginator, Datepicker, TableFilters, TableTasksPanel, EditorPopup },
   props: {
     rows: {
       default: [] as Array<any>,
@@ -264,6 +280,9 @@ export default defineComponent({
     const FlameTableModal = ref<InstanceType<typeof ModalVue>>();
 
     const ColumnNames = Object.keys(Table.model as any);
+
+    // Ошибки сохранения
+    let popupErrors: {[key:string]:string} = reactive({});
 
     // Добавляем событие скролла
 
@@ -308,8 +327,21 @@ export default defineComponent({
         else {
           await Table.save()
         }
+        popupErrors={};
       }
-      catch (Ex) { return; }
+      catch (ex: any) { 
+
+        for (const keyx in popupErrors) 
+          delete popupErrors[keyx];
+        
+        if(typeof ex.stack !== 'undefined' && typeof ex.message !== 'undefined') {
+          popupErrors.globalErrorStack = ex.message;
+        }
+        else
+          Object.assign(popupErrors, ex);
+
+        return; 
+      }
 
       FlameTableModal.value?.close();
 
@@ -380,6 +412,10 @@ export default defineComponent({
       return Table.RowsParams[row[primaryKey]].collapsed
     }
 
+    const PopupTextSaved = (txt: string, column: string)=> {
+      Table.columns[column].Popup.model = txt;
+    }
+
     const MainTableElement = ref();
 
 
@@ -397,7 +433,12 @@ export default defineComponent({
       primaryKey,
       columnClick,
       isRowCollapsed,
-      MainTableElement
+      MainTableElement,
+
+      // TODO: проверить
+      popupErrors,
+
+      PopupTextSaved
     }
 
   },

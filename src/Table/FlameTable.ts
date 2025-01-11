@@ -447,6 +447,8 @@ export default class FlameTable<T> {
       if (findedIdx !== -1) {
         this.Rows.rows[findedIdx] = reactive(res.data as any);
         this.RowsParams[columns[indexKey]].previousAttributes = res.data;
+
+        // TODO: тут можно очищать Event в columns.Popup, что бы он не пересохранял при повторном сохранении
       }
     }
 

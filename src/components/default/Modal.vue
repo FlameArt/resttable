@@ -3,7 +3,7 @@
 // УНИВЕРСАЛЬНОЕ МОДАЛЬНОЕ ОКНО
   Позволяет вызывать себя через show() и close()
 
-CustomModal.overall(v-model="isShow" :close="close" style="z-index: 999999;")
+CustomModal.overall(v-model="isShow" :close="close" style="z-index: 999;")
 
   // Этот слот для замены самого окна
   slot

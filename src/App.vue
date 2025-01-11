@@ -6,6 +6,7 @@ import Model from '@models/Testtable';
 import TableOpts from './Table/TableOpts';
 import Relatedtable from '@models/Relatedtable';
 import SubRow from './pages/SubRow.vue';
+import { useTheme } from 'vuetify'
 
 const store = storeFile(), router = useRouter(), route = useRoute();
 
@@ -23,7 +24,7 @@ onMounted(() => {
 const TableComponent = ref<InstanceType<typeof Table>>();
 const opts = new TableOpts;
 
-opts.set('name', { title: 'Название' });
+opts.set('name', { title: 'Название', Popup:{popupType: 'text'} });
 opts.set('dt1', { title: 'Дата 1' });
 opts.set('dt2', { title: 'Дата 2' });
 opts.set('id', { title: 'ID', Selector: { model: Relatedtable }, Filter: { isShow: true, type: 'selector', selector: { multiselect: true, mode: 'vertical' } } });
@@ -38,6 +39,7 @@ opts.set("name", {
   Popup: { isShow: true }
 });
 
+const theme = useTheme()
 
 opts.addVirtual('test', { title: 'test title', Table: { isShow: true, } })
 opts.addVirtual('date', { title: 'dt', Filter: { isShow: true, type: 'number' }, Table: { isShow: true, } })
