@@ -1,4 +1,4 @@
-import type { NodeTypeMenu } from '@/extensions/components/bubble'
+import type { NodeTypeMenu } from 'vuetify-pro-tiptap/lib/extensions/components/bubble'
 
 export const DEFAULT_LANG_VALUE = 'en' as const
 

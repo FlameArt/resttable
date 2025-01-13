@@ -253,7 +253,7 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import { isNumber } from 'lodash';
 import 'vue-select/dist/vue-select.css';
 import TableTasksPanel from './TableTasksPanel.vue';
-import EditorPopup from '@/components/editor/EditorPopup.vue';
+import EditorPopup from '../components/editor/EditorPopup.vue';
 import { title } from 'process';
 
 export default defineComponent({
