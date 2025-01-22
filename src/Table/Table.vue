@@ -199,7 +199,6 @@
 
           <div class="flex-1 mr-5 w-full flex flex-col self-stretch"
             v-if="Table.columns[column].Popup.popupType === 'text'">
-            {{ Table.columns[column].Popup.model }}
             <EditorPopup :value="Table.columns[column].Popup.model" @save="PopupTextSaved" :column="column" :title="Table.columns[column].Popup.title ?? column">
 
             </EditorPopup>
