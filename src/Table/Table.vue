@@ -294,6 +294,7 @@ export default defineComponent({
       // Установим все поля в пустые значения
       ColumnNames.forEach(key => {
         Table.columns[key].Popup.model = "";
+        Table.columns[key].Popup.fileModel = null;
       })
 
       FlameTableModal.value?.show();
