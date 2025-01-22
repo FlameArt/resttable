@@ -355,6 +355,9 @@ export default defineComponent({
     }
 
     const fileUpdated = async (column: any, ev: any) => {
+      // если файлы не выбраны
+      if (ev.target.files.length === 0) return;
+      
       Table.columns[column].Popup.model = ev;
       const prepared = (await REST.prepare({ myParam: ev })).myParam;
       Table.columns[column].Popup.model = prepared
