@@ -235,7 +235,6 @@
 import { onMounted, reactive, ref, defineProps } from '@vue/runtime-core'; import type { Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST, { Rows } from "flamerest"
 
 // Иконки
-import { XCircleIcon } from '@icons/24/solid'
 import { computed } from '@vue/reactivity';
 import { Column, IColumn } from './Columns';
 import { defineComponent } from 'vue';
@@ -253,7 +252,6 @@ import { isNumber } from 'lodash';
 import 'vue-select/dist/vue-select.css';
 import TableTasksPanel from './TableTasksPanel.vue';
 import EditorPopup from '../components/editor/EditorPopup.vue';
-import { title } from 'process';
 
 export default defineComponent({
   components: { ModalVue, Paginator, Datepicker, TableFilters, TableTasksPanel, EditorPopup },
@@ -310,6 +308,10 @@ export default defineComponent({
 
       // Установим все поля в фактические значения из таблицы
       ColumnNames.forEach(key => {
+        
+        if (Table.columns[key].Popup.popupType === 'file' || Table.columns[key].Popup.popupType === 'image')
+          Table.columns[key].Popup.fileModel = row[key];
+
         Table.columns[key].Popup.model = row[key];
       })
 
