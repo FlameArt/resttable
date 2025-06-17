@@ -17,6 +17,13 @@ export default class TableOpts {
   public rowSelectors: boolean = true;
 
   /**
+   * Режим отображения таблицы
+   * 'table' - стандартная таблица
+   * 'custom' - произвольный вид строк через слот
+   */
+  public displayMode: 'table' | 'custom' = 'table';
+
+  /**
    * Колонки
    */
   public columnsOpts: { [key: string]: IColumn } = {};

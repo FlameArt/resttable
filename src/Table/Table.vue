@@ -5,7 +5,7 @@
     <TableFilters :columns="Table.columns" :table="Table"></TableFilters>
 
     <!-- ПАНЕЛЬ ОПЕРАЦИЙ НАД ТАБЛИЦЕЙ -->
-    <TableTasksPanel :table="Table" @add="add">
+    <TableTasksPanel v-if="Table.opts.displayMode === 'table'" :table="Table" @add="add">
       <template #defaultButtons>
         <slot name="defaultButtons">
         </slot>
@@ -18,7 +18,7 @@
     </TableTasksPanel>
 
     <!-- ТАБЛИЦА-->
-    <div ref="MainTableElement" class="mt-2 table table-fixed w-full ">
+    <div v-if="Table.opts.displayMode === 'table'" ref="MainTableElement" class="mt-2 table table-fixed w-full ">
 
       <!-- ЗАГОЛОВКИ СТОЛБЦОВ-->
       <slot name="TableHeaders" :columns="Table.columns">
@@ -105,6 +105,14 @@
       </div>
 
     </div>
+
+    <!-- CUSTOM ROWS -->
+    <div v-if="Table.opts.displayMode === 'custom'" ref="MainTableElement" class="mt-2 w-full">
+      <template v-for="(row, index) in (Table.Rows.rows)" :key="'custom_row_' + (row as any)[primaryKey] + '_' + index">
+        <slot name="CustomRow" :row="row" :edit="() => edit(row)" :remove="() => deleteRow(row)" :table="Table" />
+      </template>
+    </div>
+
   </div>
 
   <!-- ПОСТРАНИЧНАЯ РАЗБИВКА -->
