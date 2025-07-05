@@ -29,7 +29,7 @@
     ],
     "skipLibCheck": true,
     "allowJs": true,
-    "experimentalDecorators": true,
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*.ts",

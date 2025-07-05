@@ -94,11 +94,12 @@ export default class FlameTable<T> {
     // удалим так же дубликаты
     // TODO: as any
     const allColumns = [...Object.keys(this.model as any), ...Object.keys(opts.columnsOpts)].filter((value, index, self) => self.indexOf(value) === index)
+    const tempColumns: Column[] = [];
 
     // генерим полноценные колонки из описания модели
     for (const key of allColumns) {
       const newCol = new Column;
-      this.columns[key] = newCol;
+      //this.columns[key] = newCol;
 
       // Выключаем из редактирования все праймари ключи
       if ((this.model as any).constructor['primaryKeys'].includes(key))
@@ -111,9 +112,20 @@ export default class FlameTable<T> {
       newCol.name = key;
 
       // Загружаем селекторы один раз за страницу
-      if (newCol.Popup.popupType === 'selector' && newCol.Popup.Selector.loader !== null)
+      if (newCol.Popup.popupType === 'selector' && newCol.Popup.Selector.loader !== null) {
         newCol.Popup.Selector.values = reactive(newCol.Popup.Selector.loader(newCol) ?? newCol.Popup.Selector.values)
+      }
 
+      tempColumns.push(newCol);
+
+    }
+
+    // Сортируем колонки по их позиции
+    tempColumns.sort((a, b) => (a.Table.position ?? 999) - (b.Table.position ?? 999));
+
+    // Заполняем итоговый объект в правильном порядке
+    for (const col of tempColumns) {
+      this.columns[col.name] = col;
     }
 
     // Мержим параметры с базовой версией
@@ -126,8 +138,6 @@ export default class FlameTable<T> {
 
     // Предзагружаем колонки
     this.preloadRelated()
-
-
 
   }
 
@@ -233,6 +243,17 @@ export default class FlameTable<T> {
    * @param exportFilename имя файла для экспорта, если указано, данные будут выгружены
    */
   public async update(CustomLoadParams: ITableLoadParams = {}, exportFilename: string | null = null, from: 'pager' | 'filters' = 'pager') {
+
+    if (from !== 'pager') {
+      this.Pager.page = 1;
+
+      // Сбрасываем выделенные строки
+      for (const key in this.RowsParams) {
+        this.RowsParams[key].selected = false;
+      }
+      this.RowsSelected.splice(0);
+
+    }
 
     // Дополняем загрузочные параметры фильтрами
     const filters = merge(this.applyFiltersParams(), CustomLoadParams);
@@ -456,7 +477,7 @@ export default class FlameTable<T> {
 
   }
 
-  private RemoveUnchagedFields(row: { [key: string]: any }) {
+  public RemoveUnchagedFields(row: { [key: string]: any }) {
 
     // primarykey
     const pk = (this.model as any).constructor.primaryKeys[0];
@@ -507,7 +528,7 @@ export default class FlameTable<T> {
 
   }
 
-  private getColumnsForUpdate(mode: "add" | "edit") {
+  public getColumnsForUpdate(mode: "add" | "edit") {
     const res: { [key: string]: string } = {};
     for (const key in this.columns) {
 

@@ -35,7 +35,7 @@
           <div v-for="column in Table.columns" v-show="column.Table.isShow" :key="'cheader_' + column.name"
             :class="' defaultHeader ' + column.Table.classesHeader"
             class=" table-cell align-middle border-r border-r-slate-100 px-2"
-            :style="(column.Table.width === null ? '' : 'width:' + column.Table.width + 'px')">
+            :style="(column.Table.width === null ? '' : `width: ${column.Table.width}px; min-width: ${column.Table.width}px`)">
             <span>{{ column.Table.titleCustom !== null ? (column as any).Table.titleCustom(column) : column.Table.title
               !==
               '' ?
@@ -76,7 +76,7 @@
                 :class="' defaultCell ' + column.Table.classes"
                 class="table-cell align-middle border-r border-r-slate-100 px-2 last:border-r-0 last:pr-0"
                 @click="columnClick(row, column)"
-                :style="(column.Table.width === null ? '' : 'width:' + column.Table.width + 'px')">
+                :style="(column.Table.width === null ? '' : `width: ${column.Table.width}px; min-width: ${column.Table.width}px`)">
 
                 <span v-if="!column.Table.isRawValue">{{
                   column.Table.value(row, column) }}</span>
@@ -151,13 +151,30 @@
           </div>
 
           <div v-if="Table.columns[column].Popup.popupType === 'selector'"
-            class="flex-1 mr-5 w-full flex flex-col self-stretch"><select v-model="Table.columns[column].Popup.model"
-              class="h-full self-stretch py-1 px-2 w-full outline-none border border-slate-100">
-              <option v-for="(selectorVal, selectorKey) in Table.columns[column].Popup.Selector.values"
-                :key="'sel_' + selectorKey"
-                :value="getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[1]">{{
-                getSelector(Table.columns[column].Popup.Selector.values, selectorKey, selectorVal)[0] }}</option>
-            </select>
+            class="flex-1 mr-5 w-full flex flex-col self-stretch">
+            <v-select v-model="Table.columns[column].Popup.model"
+              :items="Table.columns[column].Popup.Selector.values" item-title="title" item-value="id"
+              density="compact" hide-details>
+              <template #item="{ props, item }">
+                <v-list-item v-bind="props">
+                  <template #prepend v-if="item.raw.prepend">
+                    <span :class="item.raw.prependClasses">{{ item.raw.prepend }}</span>
+                  </template>
+                  <template #append v-if="item.raw.append">
+                    <span :class="item.raw.appendClasses">{{ item.raw.append }}</span>
+                  </template>
+                </v-list-item>
+              </template>
+              <template #selection="{ item }">
+                <div class="d-flex align-center w-100">
+                  <span v-if="item.raw.prepend" :class="item.raw.prependClasses" class="mr-1">{{ item.raw.prepend
+                  }}</span>
+                  <span class="font-normal">{{ item.raw.title }}</span>
+                  <v-spacer></v-spacer>
+                  <span v-if="item.raw.append" :class="item.raw.appendClasses">{{ item.raw.append }}</span>
+                </div>
+              </template>
+            </v-select>
           </div>
 
           <!-- КАРТИНКА -->
@@ -257,7 +274,6 @@ type Class<T> = new (...args: any[]) => T;
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { isNumber } from 'lodash';
-import 'vue-select/dist/vue-select.css';
 import TableTasksPanel from './TableTasksPanel.vue';
 import EditorPopup from '../components/editor/EditorPopup.vue';
 
@@ -284,10 +300,10 @@ export default defineComponent({
 
     const FlameTableModal = ref<InstanceType<typeof ModalVue>>();
 
-    const ColumnNames = Object.keys(Table.model as any);
+    const ColumnNames = Object.keys(Table.columns);
 
     // Ошибки сохранения
-    let popupErrors: {[key:string]:string} = reactive({});
+    let popupErrors: { [key: string]: string } = reactive({});
 
     // Добавляем событие скролла
 
@@ -316,7 +332,7 @@ export default defineComponent({
 
       // Установим все поля в фактические значения из таблицы
       ColumnNames.forEach(key => {
-        
+
         if (Table.columns[key].Popup.popupType === 'file' || Table.columns[key].Popup.popupType === 'image')
           Table.columns[key].Popup.fileModel = row[key];
 
@@ -339,18 +355,18 @@ export default defineComponent({
         }
         popupErrors={};
       }
-      catch (ex: any) { 
+      catch (ex: any) {
 
-        for (const keyx in popupErrors) 
+        for (const keyx in popupErrors)
           delete popupErrors[keyx];
-        
+
         if(typeof ex.stack !== 'undefined' && typeof ex.message !== 'undefined') {
           popupErrors.globalErrorStack = ex.message;
         }
         else
           Object.assign(popupErrors, ex);
 
-        return; 
+        return;
       }
 
       FlameTableModal.value?.close();
@@ -368,7 +384,7 @@ export default defineComponent({
     const fileUpdated = async (column: any, ev: any) => {
       // если файлы не выбраны
       if (ev.target.files.length === 0) return;
-      
+
       Table.columns[column].Popup.model = ev;
       const prepared = (await REST.prepare({ myParam: ev })).myParam;
       Table.columns[column].Popup.model = prepared
@@ -386,17 +402,9 @@ export default defineComponent({
       })
     }*/
 
-    const getSelector = (arr: any, selectorKey: any, selectorVal: any) => {
-      if (Array.isArray(arr)) return [selectorVal, selectorVal];
-      // TODO: тут загрузка объекта должна быть
-      // сейчас объект перерабатывается где-то в map и теряет ключи и значения
-      if (typeof arr === 'object' && arr !== null) return [selectorKey, selectorVal]
-      return [selectorKey, selectorVal]
-    }
-
     // Автозагрузка первичной версии
     if (props.opts.autoload === true) {
-      /** 
+      /**
       const tModel = (props.model as any)
       tModel.all().then((r: any) => {
         Table.load(r);
@@ -442,7 +450,6 @@ export default defineComponent({
       SaveTable,
       deleteRow,
       fileUpdated,
-      getSelector,
       primaryKey,
       columnClick,
       isRowCollapsed,

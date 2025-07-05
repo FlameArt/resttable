@@ -1,61 +1,109 @@
 <template>
-  <div class="fc flex-wrap">
-    <div v-for="(col) in props.columns" :key="col.name" v-show="col.Filter.isShow"
-      :class="(col.Filter.classes + (col.Filter.type === 'selector' && col.Filter.selector.mode === 'horizontal' ? ' w-full ' : ''))"
-      class="py-1 mobile:w-full mobile:px-2 mobile:block desktop:inline-block desktop:mx-2">
+  <div>
+    <v-row no-gutters align="stretch">
+      <v-col v-for="(col) in sortedFilters" :key="col.name" v-show="col.Filter.isShow"
+        :class="(col.Filter.classes + (col.Filter.type === 'selector' && col.Filter.selector.mode === 'horizontal' ? ' w-full ' : ''))"
+        class="pa-1" cols="12" md="auto" :style="mdAndUp && col.Filter.width && col.Filter.type !== 'number' ? `min-width: ${col.Filter.width}px; max-width: ${col.Filter.width}px;` : ''">
 
-      <div class="fc flex-col ">
-        <div :class="col.Filter.titleClasses" class="text-xs text-slate-400">{{ col.Filter.title ??
-          col.title.toUpperCase() ?? col.name }}</div>
+        <div class="fc flex-col h-100">
+          <div :class="col.Filter.titleClasses" class="text-xs text-slate-400 mb-1">{{ col.Filter.title ??
+            col.title.toUpperCase() ?? col.name }}</div>
+          <v-spacer v-if="mdAndUp"></v-spacer>
 
-        <!-- ТЕКСТ -->
-        <div class="mobile:w-full"
-          v-if="col.Filter.type === 'text' || col.Filter.type === 'fixed' || col.Filter.type === 'fulltext'">
-          <input class="mobile:w-full outline-none border border-slate-500 px-2 py-1"
-            :placeholder="col.title ?? col.name" type="text" @keyup="update()" v-model="col.Filter.valueString" />
-        </div>
+          <!-- ТЕКСТ -->
+          <div class="w-full"
+            v-if="col.Filter.type === 'text' || col.Filter.type === 'fixed' || col.Filter.type === 'fulltext'">
+            <v-text-field density="compact" :label="col.title ?? col.name" type="text"
+              @update:model-value="update()" v-model="col.Filter.valueString" hide-details variant="filled" />
+          </div>
 
-        <!-- ЦИФРЫ -->
-        <div class="fc mobile:w-full px-2" v-if="col.Filter.type === 'number'">
-          <input class="max-w-[100px] flex-1 outline-none border border-slate-500 px-2 py-1"
-            :placeholder="'From ' + (col.title ?? col.name)" type="text" @keyup="update()"
-            v-model="col.Filter.valueRangeNumbers.from" />
-          <span class="mx-2"> - </span>
-          <input class="max-w-[100px] flex-1 outline-none border border-slate-500 px-2 py-1"
-            :placeholder="'To ' + (col.title ?? col.name)" type="text" @keyup="update()"
-            v-model="col.Filter.valueRangeNumbers.to" />
-        </div>
+          <!-- ЦИФРЫ -->
+          <v-row dense v-if="col.Filter.type === 'number'">
+            <v-col :style="mdAndUp && col.Filter.width ? `min-width: ${col.Filter.width}px; max-width: ${col.Filter.width}px;` : ''">
+              <v-text-field class="w-full" density="compact" :label="'От ' + (col.title ?? col.name)" type="number"
+                @update:model-value="update()" v-model="col.Filter.valueRangeNumbers.from" hide-details variant="filled" />
+            </v-col>
+            <v-col :style="mdAndUp && col.Filter.width ? `min-width: ${col.Filter.width}px; max-width: ${col.Filter.width}px;` : ''">
+              <v-text-field class="w-full" density="compact" :label="'До ' + (col.title ?? col.name)" type="number"
+                @update:model-value="update()" v-model="col.Filter.valueRangeNumbers.to" hide-details variant="filled" />
+            </v-col>
+          </v-row>
 
-        <!-- СЕЛЕКТОРЫ -->
 
-        <!-- ВЕРТИКАЛЬНЫЕ -->
-        <div v-if="col.Filter.type === 'selector'" class="mobile:w-full">
-          <v-select :multiple="col.Filter.selector.multiselect" v-model="col.Filter.valueString"
-            :options="col.Selector.values" class="mobile:w-full min-w-[150px]" @option:selected="update(col)"
-            @option:deselected="update(col)" />
-        </div>
+          <!-- СЕЛЕКТОРЫ -->
+          <div v-if="col.Filter.type === 'selector' && col.Filter.selector.mode !== 'horizontal'" class="w-full">
+            <!-- Multi-select -->
+            <v-select v-if="col.Filter.selector.multiselect" v-model="col.Filter.valueRange"
+              :label="col.title ?? col.name" :items="col.Selector.values" item-title="title" item-value="id"
+              class="mobile:w-full min-w-[200px]" density="compact" @update:model-value="update()" hide-details multiple
+              chips closable-chips variant="filled">
+              <template #item="{ props, item }">
+                <v-list-item v-bind="props">
+                  <template #prepend v-if="item.raw.prepend">
+                    <span :class="item.raw.prependClasses">{{ item.raw.prepend }}</span>
+                  </template>
+                  <template #append v-if="item.raw.append">
+                    <span :class="item.raw.appendClasses">{{ item.raw.append }}</span>
+                  </template>
+                </v-list-item>
+              </template>
+              <template #chip="{ props, item }">
+                <v-chip v-bind="props">
+                  <span v-if="item.raw.prepend" :class="item.raw.prependClasses" class="mr-1">{{ item.raw.prepend
+                  }}</span>
+                  <span>{{ item.raw.title }}</span>
+                  <span v-if="item.raw.append" :class="item.raw.appendClasses" class="ml-1">{{ item.raw.append }}</span>
+                </v-chip>
+              </template>
+            </v-select>
+            <!-- Single-select -->
+            <v-select v-else v-model="col.Filter.valueString" :label="col.title ?? col.name"
+              :items="col.Selector.values" item-title="title" item-value="id" class="mobile:w-full min-w-[200px]"
+              density="compact" @update:model-value="update()" hide-details variant="filled">
+              <template #item="{ props, item }">
+                <v-list-item v-bind="props">
+                  <template #prepend v-if="item.raw.prepend">
+                    <span :class="item.raw.prependClasses">{{ item.raw.prepend }}</span>
+                  </template>
+                  <template #append v-if="item.raw.append">
+                    <span :class="item.raw.appendClasses">{{ item.raw.append }}</span>
+                  </template>
+                </v-list-item>
+              </template>
+              <template #selection="{ item }">
+                <div class="d-flex align-center w-100">
+                  <span v-if="item.raw.prepend" :class="item.raw.prependClasses" class="mr-1">{{ item.raw.prepend
+                  }}</span>
+                  <span class="font-normal">{{ item.raw.title }}</span>
+                  <v-spacer></v-spacer>
+                  <span v-if="item.raw.append" :class="item.raw.appendClasses">{{ item.raw.append }}</span>
+                </div>
+              </template>
+            </v-select>
+          </div>
 
-        <!-- ГОРИЗОНТАЛЬНЫЕ -->
-        <div v-if="col.Filter.type === 'selector' && col.Filter.selector.mode === 'horizontal'"
-          class="w-full text-center">
-          <div v-for="item in col.Selector.values" :key="item.id" class="px-2 py-1 mx-1 inline-block rounded-[30px]"
-            :style="'background-color:' + (item.color ?? 'rgb(148,163,184)')">
-            {{ item.title }}
+          <!-- ГОРИЗОНТАЛЬНЫЕ -->
+          <div v-if="col.Filter.type === 'selector' && col.Filter.selector.mode === 'horizontal'"
+            class="w-full text-center">
+            <div v-for="item in col.Selector.values" :key="item.id" class="px-2 py-1 mx-1 inline-block rounded-[30px]"
+              :style="'background-color:' + (item.color ?? 'rgb(148,163,184)')">
+              {{ item.title }}
+            </div>
+          </div>
+
+          <!-- ДАТА -->
+          <div class="w-full" v-if="col.Filter.type === 'date' || col.Filter.type === 'daterange'">
+            <Datepicker class="mobile:w-full" v-if="col.Filter.type === 'date'" v-model="col.Filter.valueString"
+              :auto-apply="true" :enable-time-picker="false" @update:model-value="update()" :teleport="true"></Datepicker>
+            <Datepicker class="mobile:w-full" v-if="col.Filter.type === 'daterange'" v-model="col.Filter.valueRange"
+              :range="true" :enable-time-picker="false" :auto-apply="true" @update:model-value="update()"
+              :teleport="true">
+            </Datepicker>
           </div>
         </div>
 
-        <!-- ДАТА -->
-        <div class="mobile:w-full" v-if="col.Filter.type === 'date' || col.Filter.type === 'daterange'">
-          <Datepicker class="mobile:w-full" v-if="col.Filter.type === 'date'" v-model="col.Filter.valueString"
-            :auto-apply="true" :enable-time-picker="false" @update:model-value="update()" :teleport="true"></Datepicker>
-          <Datepicker class="mobile:w-full" v-if="col.Filter.type === 'daterange'" v-model="col.Filter.valueRange"
-            :range="true" :enable-time-picker="false" :auto-apply="true" @update:model-value="update()"
-            :teleport="true">
-          </Datepicker>
-        </div>
-      </div>
-
-    </div>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -69,11 +117,13 @@ import { Column, IColumn } from './Columns';
 //import { TableFilter } from './TableOpts.js';
 import FlameTable from './FlameTable';
 import Datepicker from '@vuepic/vue-datepicker';
-import vSelect from 'vue-select'
+// import vSelect from 'vue-select' // Больше не используется
 import ITableSelectorItem from './TableSelectorItem';
+import { useDisplay } from 'vuetify';
 
 // Глобальное хранилище и роуты
 const store = storeFile(), router = useRouter(), route = useRoute();
+const { mdAndUp } = useDisplay();
 
 // Локальное состояние компонента
 const state = reactive({
@@ -86,18 +136,26 @@ const props = defineProps<{
   table: FlameTable<any>,
 }>()
 
+const sortedFilters = computed(() => {
+  return Object.values(props.columns).sort((a, b) => (a.Filter.position ?? 999) - (b.Filter.position ?? 999));
+});
+
 // Примонтировано
 onMounted(async () => {
 
 })
 
 
-const update = (col?: Column) => {
+const update = () => {
 
   // селектор преобразуем к v-model
+  /*
+  // Эта логика больше не нужна, т.к. v-select от Vuetify с item-value="id" 
+  // сразу пишет в модель нужные значения (id или массив id)
   if (col && col.Filter?.selector?.multiselect) {
     col.Filter.valueRange = (col.Filter.valueString as any).map((r: ITableSelectorItem) => r.id);
   }
+  */
 
   props.table.update({}, null, 'filters');
 

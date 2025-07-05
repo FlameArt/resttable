@@ -31,6 +31,11 @@ export class Column implements IColumn {
     isShow: true,
 
     /**
+     * Позиция колонки для сортировки
+     */
+    position: 999,
+
+    /**
      * Заголовок столбца в таблице
      */
     title: "",
@@ -124,7 +129,7 @@ export class Column implements IColumn {
      * @param col 
      * @returns 
      */
-    value: (row: any, col: string) => row[col]
+    value: (row: any, col: string) => row[col],
 
   };
 
@@ -158,9 +163,15 @@ export class Column implements IColumn {
     // Минимальное число символов в строке фильтра, после которого будет произведён запрос
     filterMinSymbolsRequest: 0,
 
-    // Позиция фильтра по порядку
-    filterRow: 0,
-    filterColumn: 0,
+    /**
+     * Позиция фильтра в общей очереди
+     */
+    position: 999,
+
+    /**
+     * Ширина фильтра в пикселях
+     */
+    width: null as number | null,
 
     /**
      * CSS-классы, 
@@ -225,10 +236,10 @@ export class Column implements IColumn {
     Selector: {
 
       // Значения селектора - готовые
-      values: [],
+      values: [] as ITableSelectorItem[],
 
       // Загрузчик значений - используется всегда и перекрывает values
-      loader: (column: Column) => null
+      loader: (column: Column) => null as ITableSelectorItem[] | null,
 
     },
 
@@ -310,13 +321,18 @@ export interface IColumn {
   Table?: {
     isShow?: boolean,
     title?: string,
-    value?: (row: any, column: Column) => string,
+    value?: (row: any, column: Column) => any,
     isRawValue?: boolean,
     click?: (row: any, column: Column) => void,
     classes?: string,
     classesHeader?: string,
     width?: number | null,
     isSelected?: boolean,
+
+    /**
+     * Позиция колонки для сортировки
+     */
+    position?: number,
 
     /**
      * Кастомный заголовок
@@ -350,9 +366,15 @@ export interface IColumn {
     // Минимальное число символов в строке фильтра, после которого будет произведён запрос
     filterMinSymbolsRequest?: number,
 
-    // Позиция фильтра по порядку
-    filterRow?: number,
-    filterColumn?: number,
+    /**
+     * Позиция фильтра в общей очереди
+     */
+    position?: number,
+
+    /**
+     * Ширина фильтра в пикселях
+     */
+    width?: number | null,
 
     /**
      * Список значений под выбор
@@ -389,6 +411,12 @@ export interface IColumn {
   Selector?: {
 
     /**
+     * Нужна авто-предзагрузка значений при загрузке страницы
+     * [полная таблица]
+     */
+    preload?: boolean,
+
+    /**
      * Загрузчик значений ручной
      * @returns ITableSelectorItem[]
      */
@@ -412,7 +440,7 @@ export interface IColumn {
      * @param col 
      * @returns 
      */
-    value?: (row: any, col: string) => string
+    value?: (row: any, col: string) => any,
 
   },
 
@@ -460,15 +488,14 @@ export interface IColumn {
     // Текст ошибки добавления/обновления
     errorMessage?: string,
 
-
     // Настройки селектора, если он включён в popupType
     Selector?: {
 
       // Значения селектора - готовые
-      values?: Array<any>,
+      values?: ITableSelectorItem[],
 
       // Загрузчик значений - используется всегда и перекрывает values
-      loader?: (column: Column) => Array<any> | null
+      loader?: (column: Column) => ITableSelectorItem[] | null,
 
     },
 

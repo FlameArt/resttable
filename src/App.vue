@@ -56,12 +56,14 @@ opts.LoadParams.sort = ['-dt1'];
 </script>
 
 <template lang="pug">
-Table(:model="Model", :opts="opts")
-  template(v-slot:RowSubSlot="params")
-    //| {{ params.row.name + ' LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  line' }}
-    //SubRow
-    div(class="flex items-center justify-center w-full mx-auto") AAA
-  template(#otherButtons)
+v-app
+  v-main
+    Table(:model="Model", :opts="opts")
+      template(v-slot:RowSubSlot="params")
+        //| {{ params.row.name + ' LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  line' }}
+        //SubRow
+        div(class="flex items-center justify-center w-full mx-auto") AAA
+      template(#otherButtons)
 </template>
 
 <style>
