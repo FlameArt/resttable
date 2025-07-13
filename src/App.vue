@@ -72,9 +72,4 @@ v-app
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-/* Цвет стандартного фона модального окна */
-.vue-universal-modal {
-  background-color: rgba(0, 0, 0, 0.15) !important;
-}
 </style>

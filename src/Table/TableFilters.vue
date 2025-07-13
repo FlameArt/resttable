@@ -3,7 +3,7 @@
     <v-row no-gutters align="stretch">
       <v-col v-for="(col) in sortedFilters" :key="col.name" v-show="col.Filter.isShow"
         :class="(col.Filter.classes + (col.Filter.type === 'selector' && col.Filter.selector.mode === 'horizontal' ? ' w-full ' : ''))"
-        class="pa-1" cols="12" md="auto" :style="mdAndUp && col.Filter.width && col.Filter.type !== 'number' ? `min-width: ${col.Filter.width}px; max-width: ${col.Filter.width}px;` : ''">
+        class="pa-1" cols="12" md="auto" :style="getTextFilterStyle(col)">
 
         <div class="fc flex-col h-100">
           <div :class="col.Filter.titleClasses" class="text-xs text-slate-400 mb-1">{{ col.Filter.title ??
@@ -19,11 +19,11 @@
 
           <!-- ЦИФРЫ -->
           <v-row dense v-if="col.Filter.type === 'number'">
-            <v-col :style="mdAndUp && col.Filter.width ? `min-width: ${col.Filter.width}px; max-width: ${col.Filter.width}px;` : ''">
+            <v-col :style="getNumberFilterStyle(col)">
               <v-text-field class="w-full" density="compact" :label="'От ' + (col.title ?? col.name)" type="number"
                 @update:model-value="update()" v-model="col.Filter.valueRangeNumbers.from" hide-details variant="filled" />
             </v-col>
-            <v-col :style="mdAndUp && col.Filter.width ? `min-width: ${col.Filter.width}px; max-width: ${col.Filter.width}px;` : ''">
+            <v-col :style="getNumberFilterStyle(col)">
               <v-text-field class="w-full" density="compact" :label="'До ' + (col.title ?? col.name)" type="number"
                 @update:model-value="update()" v-model="col.Filter.valueRangeNumbers.to" hide-details variant="filled" />
             </v-col>
@@ -120,6 +120,7 @@ import Datepicker from '@vuepic/vue-datepicker';
 // import vSelect from 'vue-select' // Больше не используется
 import ITableSelectorItem from './TableSelectorItem';
 import { useDisplay } from 'vuetify';
+import debounce from 'lodash-es/debounce';
 
 // Глобальное хранилище и роуты
 const store = storeFile(), router = useRouter(), route = useRoute();
@@ -145,8 +146,33 @@ onMounted(async () => {
 
 })
 
+const getTextFilterStyle = (col: Column) => {
+  if (!mdAndUp.value || col.Filter.type === 'number') return '';
 
-const update = () => {
+  let width = col.Filter.width;
+  if (width === null || typeof width === 'undefined') {
+    if (['text', 'fixed', 'fulltext'].includes(col.Filter.type)) {
+      width = 250;
+    }
+  }
+
+  if (width) {
+    return `min-width: ${width}px; max-width: ${width}px;`;
+  }
+  return '';
+}
+
+const getNumberFilterStyle = (col: Column) => {
+  if (!mdAndUp.value) return '';
+  let width = col.Filter.width;
+  if (width === null || typeof width === 'undefined') {
+    width = 85;
+  }
+  return `min-width: ${width}px; max-width: ${width}px;`;
+}
+
+
+const update = debounce(() => {
 
   // селектор преобразуем к v-model
   /*
@@ -159,7 +185,7 @@ const update = () => {
 
   props.table.update({}, null, 'filters');
 
-}
+}, 300);
 
 
 

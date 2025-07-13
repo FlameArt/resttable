@@ -119,141 +119,7 @@
   <Paginator class="mt-3" :table="Table" v-if="opts.Pagination.type === 'pages'" />
 
   <!-- МОДАЛКА ДОБАВЛЕНИЯ-->
-  <ModalVue ref="FlameTableModal">
-    <template #default>
-      <div class="bg-white rounded-xl" :class="'w-full desktop:w-[777px]'">
-
-        <!-- СЛОТ ЗАГОЛОВКА ПОПАПА -->
-        <slot name="header" />
-
-        <!-- КОЛОНКИ ТАБЛИЦЫ-->
-        <label v-for="column in ColumnNames" v-show="Table.columns[column].Popup.isShow" :key="'c' + column"
-          class="flex items-stretch justify-center w-full my-1 ml-2">
-
-          <!-- Заголовок -->
-          <div class="text-left px-2 py-1 bg-slate-100" style="width: 110px">
-            <div>{{ Table.columns[column].Popup.title !== '' ? Table.columns[column].Popup.title === '' :
-              Table.columns[column].title !== '' ? Table.columns[column].title : Table.columns[column].name }}</div>
-            <div class="text-xs text-slate-400">{{ Table.columns[column].Popup.desc }}</div>
-          </div>
-
-          <div v-if="Table.columns[column].Popup.popupType === 'string'"
-            class="flex-1 mr-5 w-full flex flex-col self-stretch">
-            <input v-model="Table.columns[column].Popup.model"
-              class="h-full self-stretch py-1 px-2 w-full outline-none border border-slate-100" type="text"
-              :disabled="!Table.columns[column].Popup.isEnabled"
-              :placeholder="Table.columns[column].Popup.placeholder !== '' ? Table.columns[column].Popup.placeholder : Table.columns[column].title !== '' ? Table.columns[column].title : Table.columns[column].name">
-          </div>
-
-          <div v-if="Table.columns[column].Popup.popupType === 'date'"
-            class="flex-1 mr-5 w-full flex flex-col self-stretch">
-            <Datepicker v-model="Table.columns[column].Popup.model" :auto-apply="true" />
-          </div>
-
-          <div v-if="Table.columns[column].Popup.popupType === 'selector'"
-            class="flex-1 mr-5 w-full flex flex-col self-stretch">
-            <v-select v-model="Table.columns[column].Popup.model"
-              :items="Table.columns[column].Popup.Selector.values" item-title="title" item-value="id"
-              density="compact" hide-details>
-              <template #item="{ props, item }">
-                <v-list-item v-bind="props">
-                  <template #prepend v-if="item.raw.prepend">
-                    <span :class="item.raw.prependClasses">{{ item.raw.prepend }}</span>
-                  </template>
-                  <template #append v-if="item.raw.append">
-                    <span :class="item.raw.appendClasses">{{ item.raw.append }}</span>
-                  </template>
-                </v-list-item>
-              </template>
-              <template #selection="{ item }">
-                <div class="d-flex align-center w-100">
-                  <span v-if="item.raw.prepend" :class="item.raw.prependClasses" class="mr-1">{{ item.raw.prepend
-                  }}</span>
-                  <span class="font-normal">{{ item.raw.title }}</span>
-                  <v-spacer></v-spacer>
-                  <span v-if="item.raw.append" :class="item.raw.appendClasses">{{ item.raw.append }}</span>
-                </div>
-              </template>
-            </v-select>
-          </div>
-
-          <!-- КАРТИНКА -->
-          <div v-if="Table.columns[column].Popup.popupType === 'image'"
-            class="flex-1 border border-slate-100 mr-5 w-full flex self-stretch">
-            <div class="flex-1">
-              <img class="max-w-[200px]" :src="fileGetData(Table.columns[column].Popup.model, true)">
-            </div>
-
-            <!-- Загрузчик-->
-            <label :for="'cfile_' + column">
-
-              <svg class="my-auto cursor-pointer" width="24" height="24" viewbox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M11.4697 2.46967C11.7626 2.17678 12.2374 2.17678 12.5303 2.46967L17.0303 6.96967C17.3232 7.26256 17.3232 7.73744 17.0303 8.03033C16.7374 8.32322 16.2626 8.32322 15.9697 8.03033L12.75 4.81066L12.75 16.5C12.75 16.9142 12.4142 17.25 12 17.25C11.5858 17.25 11.25 16.9142 11.25 16.5L11.25 4.81066L8.03033 8.03033C7.73744 8.32322 7.26256 8.32322 6.96967 8.03033C6.67678 7.73744 6.67678 7.26256 6.96967 6.96967L11.4697 2.46967ZM3 15.75C3.41421 15.75 3.75 16.0858 3.75 16.5V18.75C3.75 19.5784 4.42157 20.25 5.25 20.25H18.75C19.5784 20.25 20.25 19.5784 20.25 18.75V16.5C20.25 16.0858 20.5858 15.75 21 15.75C21.4142 15.75 21.75 16.0858 21.75 16.5V18.75C21.75 20.4069 20.4069 21.75 18.75 21.75H5.25C3.59315 21.75 2.25 20.4069 2.25 18.75V16.5C2.25 16.0858 2.58579 15.75 3 15.75Z"
-                  fill="#0F172A" />
-              </svg>
-
-              <input class="hidden" :name="'cfile_' + column" type="file" @change="fileUpdated(column, $event)">
-
-            </label>
-          </div>
-
-          <!-- ФАЙЛЫ -->
-          <div v-if="Table.columns[column].Popup.popupType === 'file'"
-            class="flex-1 border border-slate-100 mr-5 w-full flex self-stretch">
-
-            <div class="flex-1">
-              {{ getFileName(Table.columns[column].Popup.model) }}
-            </div>
-
-            <!-- Загрузчик-->
-            <label :for="'cfile_' + column">
-
-              <svg class="my-auto cursor-pointer" width="24" height="24" viewbox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M11.4697 2.46967C11.7626 2.17678 12.2374 2.17678 12.5303 2.46967L17.0303 6.96967C17.3232 7.26256 17.3232 7.73744 17.0303 8.03033C16.7374 8.32322 16.2626 8.32322 15.9697 8.03033L12.75 4.81066L12.75 16.5C12.75 16.9142 12.4142 17.25 12 17.25C11.5858 17.25 11.25 16.9142 11.25 16.5L11.25 4.81066L8.03033 8.03033C7.73744 8.32322 7.26256 8.32322 6.96967 8.03033C6.67678 7.73744 6.67678 7.26256 6.96967 6.96967L11.4697 2.46967ZM3 15.75C3.41421 15.75 3.75 16.0858 3.75 16.5V18.75C3.75 19.5784 4.42157 20.25 5.25 20.25H18.75C19.5784 20.25 20.25 19.5784 20.25 18.75V16.5C20.25 16.0858 20.5858 15.75 21 15.75C21.4142 15.75 21.75 16.0858 21.75 16.5V18.75C21.75 20.4069 20.4069 21.75 18.75 21.75H5.25C3.59315 21.75 2.25 20.4069 2.25 18.75V16.5C2.25 16.0858 2.58579 15.75 3 15.75Z"
-                  fill="#0F172A" />
-              </svg>
-
-              <input class="hidden" :name="'cfile_' + column" type="file" @change="fileUpdated(column, $event)">
-
-            </label>
-          </div>
-
-          <div class="flex-1 mr-5 w-full flex flex-col self-stretch"
-            v-if="Table.columns[column].Popup.popupType === 'text'">
-            <EditorPopup :value="Table.columns[column].Popup.model" @save="PopupTextSaved" :column="column" :title="Table.columns[column].Popup.title ?? column">
-
-            </EditorPopup>
-          </div>
-
-          <!-- ОШИБКИ СОХРАНЕНИЯ -->
-          <div class="mx-2 my-1 text-red-600" v-if="(typeof popupErrors[column]!== 'undefined')">{{ popupErrors[column]
-            }}</div>
-
-        </label>
-
-        <div class="text-red-600 mx-2 my-1" v-if="(typeof popupErrors['globalErrorStack']!== 'undefined')">{{
-          popupErrors['globalErrorStack'] }}</div>
-
-        <!-- КНОПКИ СОХРАНЕНИЯ-->
-        <div class="flex w-full mt-3 mb-2 justify-between items-center">
-          <div v-show="$props.opts?.Add.can"
-            class="cursor-pointer ml-2 text-lg py-2 text-white block bg-gray-400 font-medium rounded px-4 text-center hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
-            @click="Table.OpenedRow = null; FlameTableModal?.close()">
-            Отмена
-          </div>
-          <div
-            class="cursor-pointer ml-2 text-lg py-2 mr-3 text-white block bg-blue-600 font-medium rounded px-4 text-center hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
-            @click=" SaveTable()">
-            {{ Table.mode === 'add' ? 'Добавить' : 'Сохранить' }}
-          </div>
-        </div>
-      </div>
-    </template>
-  </ModalVue>
+  <TablePopup :table="Table" ref="FlameTablePopup"></TablePopup>
 </template>
 
 <script lang="ts">
@@ -266,7 +132,6 @@ import { defineComponent } from 'vue';
 
 import TableOpts from './TableOpts';
 import FlameTable from './FlameTable';
-import ModalVue from './../components/default/Modal.vue';
 import Paginator from './Paginator.vue';
 import TableFilters from './TableFilters.vue';
 type Class<T> = new (...args: any[]) => T;
@@ -275,10 +140,10 @@ import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { isNumber } from 'lodash';
 import TableTasksPanel from './TableTasksPanel.vue';
-import EditorPopup from '../components/editor/EditorPopup.vue';
+import TablePopup, { type TablePopupInstance } from './TablePopup.vue';
 
 export default defineComponent({
-  components: { ModalVue, Paginator, Datepicker, TableFilters, TableTasksPanel, EditorPopup },
+  components: { Paginator, Datepicker, TableFilters, TableTasksPanel, TablePopup },
   props: {
     rows: {
       default: [] as Array<any>,
@@ -298,81 +163,22 @@ export default defineComponent({
 
     const Table = (new FlameTable(props.model as any, props.opts)) as FlameTable<any>;
 
-    const FlameTableModal = ref<InstanceType<typeof ModalVue>>();
+    const FlameTablePopup = ref<TablePopupInstance>();
 
     const ColumnNames = Object.keys(Table.columns);
-
-    // Ошибки сохранения
-    let popupErrors: { [key: string]: string } = reactive({});
-
-    // Добавляем событие скролла
 
     /**
      * Добавление новой записи
      */
     const add = () => {
-      Table.mode = 'add';
-
-      // Установим все поля в пустые значения
-      ColumnNames.forEach(key => {
-        Table.columns[key].Popup.model = "";
-        Table.columns[key].Popup.fileModel = null;
-      })
-
-      FlameTableModal.value?.show();
+      FlameTablePopup.value?.showAdd();
     }
 
     /**
      * Редактирование записи
      */
     const edit = async (row: any) => {
-      Table.mode = 'edit';
-
-      await Table.opts.Popup.load(row, Table);
-
-      // Установим все поля в фактические значения из таблицы
-      ColumnNames.forEach(key => {
-
-        if (Table.columns[key].Popup.popupType === 'file' || Table.columns[key].Popup.popupType === 'image')
-          Table.columns[key].Popup.fileModel = row[key];
-
-        Table.columns[key].Popup.model = row[key];
-      })
-
-      Table.OpenedRow = row;
-
-      FlameTableModal.value?.show();
-    }
-
-    const SaveTable = async () => {
-
-      try {
-        if (Table.mode === 'add') {
-          await Table.add()
-        }
-        else {
-          await Table.save()
-        }
-        popupErrors={};
-      }
-      catch (ex: any) {
-
-        for (const keyx in popupErrors)
-          delete popupErrors[keyx];
-
-        if(typeof ex.stack !== 'undefined' && typeof ex.message !== 'undefined') {
-          popupErrors.globalErrorStack = ex.message;
-        }
-        else
-          Object.assign(popupErrors, ex);
-
-        return;
-      }
-
-      FlameTableModal.value?.close();
-
-      Table.OpenedRow = null;
-
+      FlameTablePopup.value?.showEdit(row);
     }
 
     const deleteRow = async (row: any) => {
@@ -433,32 +239,19 @@ export default defineComponent({
       return Table.RowsParams[row[primaryKey]].collapsed
     }
 
-    const PopupTextSaved = (txt: string, column: string)=> {
-      Table.columns[column].Popup.model = txt;
-    }
-
     const MainTableElement = ref();
-
-
 
     return {
       Table,
-      FlameTableModal,
+      FlameTablePopup,
       ColumnNames,
       add,
       edit,
-      SaveTable,
       deleteRow,
-      fileUpdated,
       primaryKey,
       columnClick,
       isRowCollapsed,
       MainTableElement,
-
-      // TODO: проверить
-      popupErrors,
-
-      PopupTextSaved
     }
 
   },
@@ -494,40 +287,6 @@ export default defineComponent({
 
     },
 
-    fileGetData(thisArr: any, getSource: boolean = true) {
-
-
-
-      if (thisArr instanceof Array && thisArr.length > 0) {
-        // Получить строку с исходником
-        if (getSource) {
-          if (typeof thisArr[0].data === 'string') return thisArr[0].data;
-          if (typeof thisArr[0].file === 'string') return REST.SERVER + "/" + thisArr[0].file;
-          return "";
-        }
-        // Получить данные целиком
-        return thisArr[0]
-      }
-
-      return null
-
-    },
-
-    getFileName(fileModel: any) {
-      const res = this.fileGetData(fileModel, false)
-      if (res?.name) {
-        if (typeof res.name === 'string' && res.name !== '') {
-          return res.name;
-        }
-        else {
-          if (res.file) {
-            const splitted = res.file.split('.');
-            return 'File.' + splitted[splitted.length - 1];
-          }
-        }
-      }
-    },
-
     CheckboxSelectionChanged(event: any, all: boolean = false) {
       if (all === true)
         for (const key in this.Table.RowsParams) {
@@ -536,7 +295,7 @@ export default defineComponent({
 
       this.Table.getSelectedRows();
 
-      // ТУТ СОБЫТИЕ ОБ ИЗМЕНЕНИИ ПРИХОДИТ В ИСТАНС РАНЬШЕ САМОГО ИЗМЕНЕНИЯ МАССИВА
+      // ТУТ СОБЫТИЕ ОБ ИЗМЕНЕНИИ ПРИХОДИТ В ИСТАНС РАНШЬЕ САМОГО ИЗМЕНЕНИЯ МАССИВА
 
     }
   },
