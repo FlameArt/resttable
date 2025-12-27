@@ -1,33 +1,37 @@
-<template lang="pug">
+<template>
+  <!-- УНИВЕРСАЛЬНОЕ МОДАЛЬНОЕ ОКНО -->
+  <!-- Позволяет вызывать себя через show() и close() -->
+  <CustomModal class="overall" v-model="isShow" :close="close" style="z-index: 999;">
+    <!-- Этот слот для замены самого окна -->
+    <slot>
+      <div class="bg-white rounded-xl">
+        <!-- Этот слот позволяет заменить всё сразу внутри окна -->
+        <slot name="inner">
+          <!-- Заголовок -->
+          <div class="flex items-center px-5 border-b border-b-gray-300" v-if="title !== ''">
+            <h1 class="text-3xl py-5">{{ title }}</h1>
+            <XCircleIcon class="ml-24 w-6 opacity-25 cursor-pointer" @click="close"></XCircleIcon>
+          </div>
 
-// УНИВЕРСАЛЬНОЕ МОДАЛЬНОЕ ОКНО
-  Позволяет вызывать себя через show() и close()
+          <!-- Тело -->
+          <div class="my-3 px-5">
+            <slot name="body">
+              <div class="text-left">{{ body === '' ? 'Укажите сообщение или используйте слот body' : '' }}</div>
+            </slot>
+          </div>
 
-CustomModal.overall(v-model="isShow" :close="close" style="z-index: 999;")
-
-  // Этот слот для замены самого окна
-  slot
-
-    .bg-white.rounded-xl
-
-      // Этот слот позволяет заменить всё сразу внутри окна
-      slot(name="inner")
-
-        // Заголовок
-        .flex.items-center.px-5.border-b.border-b-gray-300(v-if="title !== ''")
-          h1.text-3xl.py-5 {{ title }}
-          XCircleIcon.ml-24.w-6.opacity-25.cursor-pointer(@click="close")
-
-        // Тело
-        .my-3.px-5
-          slot(name="body")
-            .text-left {{ body === '' ? 'Укажите сообщение или используйте слот body' : '' }}
-
-        // Кнопки
-        slot(name="buttons")
-          .border-t.border-t-gray-300.mb-4.pt-3.pr-5.flex.items-end.flex-col
-            button.cursor-pointer.ml-5.rounded-full.bg-blue-700.px-4.py-1.text-white(@click="close") {{ closeButton === '' ? 'Закрыть' : closeButton }}
-      
+          <!-- Кнопки -->
+          <slot name="buttons">
+            <div class="border-t border-t-gray-300 mb-4 pt-3 pr-5 flex items-end flex-col">
+              <button class="cursor-pointer ml-5 rounded-full bg-blue-700 px-4 py-1 text-white" @click="close">
+                {{ closeButton === '' ? 'Закрыть' : closeButton }}
+              </button>
+            </div>
+          </slot>
+        </slot>
+      </div>
+    </slot>
+  </CustomModal>
 </template>
 
 <script lang="ts">
@@ -83,5 +87,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.overall {}
+.overall {
+}
 </style>

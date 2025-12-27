@@ -1,30 +1,34 @@
-<template lang="pug">
-.fb.my-5.text-left(class="mobile:flex-wrap mobile:justify-between mobile:w-full")
-  .bg-green(class="w-[300px] h-[300px]")
-  .ml-5(class="mobile:w-full")
-    .fb.my-1(class="mobile:flex-wrap mobile:w-full mobile:justify-between")
-      div.inline-block.text-3xl NAME
-      span.text-sm.inline-block.bg-blue-200.mx-5.py-1.px-2 TYPE
+<template>
+  <div class="fb my-5 text-left mobile:flex-wrap mobile:justify-between mobile:w-full">
+    <div class="bg-green w-[300px] h-[300px]"></div>
+    <div class="ml-5 mobile:w-full">
+      <div class="fb my-1 mobile:flex-wrap mobile:w-full mobile:justify-between">
+        <div class="inline-block text-3xl">NAME</div>
+        <span class="text-sm inline-block bg-blue-200 mx-5 py-1 px-2">TYPE</span>
 
-      div.text-sm.bg-slate-100.text-slate-500.px-2.py-1.inline-block
-        span Flex right block
-        span.ml-1 block 2
+        <div class="text-sm bg-slate-100 text-slate-500 px-2 py-1 inline-block">
+          <span>Flex right block</span>
+          <span class="ml-1">block 2</span>
+        </div>
+      </div>
 
-    div.my-1
-      span.text-xl Text: xxxxx
+      <div class="my-1">
+        <span class="text-xl">Text: xxxxx</span>
+      </div>
 
-    div.my-1
-      .text-sm.inline-block.bg-yellow-100.mr-2.py-1.px-2 TEST
-    div.my-1.text-sm  Text: xxxxx
-    div.my-1.text-sm  Text: xxxxx
-    div.my-1.text-sm  Text: xxxxx
-    div.my-1.text-sm  Text: xxxxx
-    
-
+      <div class="my-1">
+        <div class="text-sm inline-block bg-yellow-100 mr-2 py-1 px-2">TEST</div>
+      </div>
+      <div class="my-1 text-sm">Text: xxxxx</div>
+      <div class="my-1 text-sm">Text: xxxxx</div>
+      <div class="my-1 text-sm">Text: xxxxx</div>
+      <div class="my-1 text-sm">Text: xxxxx</div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, defineProps, defineEmits, nextTick } from '@vue/runtime-core'; import type { Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST from "flamerest"
+import { onMounted, reactive, ref, nextTick } from '@vue/runtime-core'; import type { Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST from "flamerest"
 
 // Иконки
 import { } from '@icons/24/solid'

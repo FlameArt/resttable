@@ -1,5 +1,20 @@
+<template>
+  <v-app>
+    <v-main>
+      <Table :model="Model" :opts="opts">
+        <template v-slot:RowSubSlot="params">
+          <!-- {{ params.row.name + ' LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  line' }} -->
+          <!-- <SubRow /> -->
+          <div class="flex items-center justify-center w-full mx-auto">AAA</div>
+        </template>
+        <template #otherButtons></template>
+      </Table>
+    </v-main>
+  </v-app>
+</template>
+
 <script setup lang="ts">
-import { onMounted, reactive, defineProps } from '@vue/runtime-core'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST from "flamerest"
+import { onMounted, reactive } from '@vue/runtime-core'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST from "flamerest"
 import Table from './Table/Table.vue';
 import { ref } from 'vue';
 import Model from '@models/Testtable';
@@ -54,17 +69,6 @@ opts.Pagination.type = 'scrollable';
 opts.LoadParams.sort = ['-dt1'];
 
 </script>
-
-<template lang="pug">
-v-app
-  v-main
-    Table(:model="Model", :opts="opts")
-      template(v-slot:RowSubSlot="params")
-        //| {{ params.row.name + ' LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  LOOOONG  line' }}
-        //SubRow
-        div(class="flex items-center justify-center w-full mx-auto") AAA
-      template(#otherButtons)
-</template>
 
 <style>
 #app {

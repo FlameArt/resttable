@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3'
-import { computed, ref, watch, withDefaults, defineProps } from 'vue'
+import { computed, ref, watch, withDefaults } from 'vue'
 import { locale } from 'vuetify-pro-tiptap'
 
 interface LinkAttrs {
