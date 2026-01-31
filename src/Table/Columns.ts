@@ -124,6 +124,16 @@ export class Column implements IColumn {
     values: [] as ITableSelectorItem[],
 
     /**
+     * Разрешить выбирать пустое значение (null)
+     */
+    allowNull: true,
+
+    /**
+     * Заголовок для пустого значения
+     */
+    nullTitle: "—",
+
+    /**
      * Кастомизация вывода отдельного элемента
      * @param row 
      * @param col 
@@ -193,7 +203,7 @@ export class Column implements IColumn {
   public Popup = {
 
     // Тут привязка к реальным данным
-    model: "",
+    model: "" as any,
 
     // Тут модель для файлов
     fileModel: null as any,
@@ -237,6 +247,16 @@ export class Column implements IColumn {
 
       // Значения селектора - готовые
       values: [] as ITableSelectorItem[],
+
+      /**
+       * Разрешить выбирать пустое значение (null)
+       */
+      allowNull: false,
+
+      /**
+       * Заголовок для пустого значения
+       */
+      nullTitle: "—",
 
       // Загрузчик значений - используется всегда и перекрывает values
       loader: (column: Column) => null as ITableSelectorItem[] | null,
@@ -427,6 +447,16 @@ export interface IColumn {
      */
     values?: ITableSelectorItem[],
 
+    /**
+     * Разрешить выбирать пустое значение (null)
+     */
+    allowNull?: boolean,
+
+    /**
+     * Заголовок для пустого значения
+     */
+    nullTitle?: string,
+
 
     /**
      * Модель, с которой выгружать значения
@@ -493,6 +523,16 @@ export interface IColumn {
 
       // Значения селектора - готовые
       values?: ITableSelectorItem[],
+
+      /**
+       * Разрешить выбирать пустое значение (null)
+       */
+      allowNull?: boolean,
+
+      /**
+       * Заголовок для пустого значения
+       */
+      nullTitle?: string,
 
       // Загрузчик значений - используется всегда и перекрывает values
       loader?: (column: Column) => ITableSelectorItem[] | null,

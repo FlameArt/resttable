@@ -1,6 +1,6 @@
 export default interface ITableSelectorItem {
 
-   id: string | number,
+   id: string | number | null,
    title?: string,
    label?: string,
    color?: string,

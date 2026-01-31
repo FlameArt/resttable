@@ -195,8 +195,13 @@ export default defineComponent({
 
       // Установим все поля в пустые значения
       ColumnNames.forEach(key => {
-        Table.columns[key].Popup.model = "";
-        Table.columns[key].Popup.fileModel = null;
+        const col = Table.columns[key];
+        if (col.Popup.popupType === 'selector' && col.Popup.Selector.allowNull) {
+          col.Popup.model = null;
+        } else {
+          col.Popup.model = "";
+        }
+        col.Popup.fileModel = null;
       })
 
       isDialogVisible.value = true;

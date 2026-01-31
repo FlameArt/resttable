@@ -112,8 +112,47 @@ export default class FlameTable<T> {
       newCol.name = key;
 
       // Загружаем селекторы один раз за страницу
-      if (newCol.Popup.popupType === 'selector' && newCol.Popup.Selector.loader !== null) {
-        newCol.Popup.Selector.values = reactive(newCol.Popup.Selector.loader(newCol) ?? newCol.Popup.Selector.values)
+      if (newCol.Popup.popupType === 'selector') {
+        if (newCol.Popup.Selector.loader !== null) {
+          const loadedValues = newCol.Popup.Selector.loader(newCol) ?? newCol.Popup.Selector.values;
+
+          // Если разрешён null, добавляем его в начало
+          if (newCol.Popup.Selector.allowNull) {
+            if (!loadedValues.some(v => v.id === null)) {
+              loadedValues.unshift({
+                id: null,
+                title: newCol.Popup.Selector.nullTitle,
+                label: newCol.Popup.Selector.nullTitle,
+              });
+            }
+          }
+
+          newCol.Popup.Selector.values = reactive(loadedValues)
+        } else {
+          // Если лоадера нет, но allowNull включен, добавляем null в существующие values
+          if (newCol.Popup.Selector.allowNull) {
+            if (!newCol.Popup.Selector.values.some(v => v.id === null)) {
+              newCol.Popup.Selector.values.unshift({
+                id: null,
+                title: newCol.Popup.Selector.nullTitle,
+                label: newCol.Popup.Selector.nullTitle,
+              });
+            }
+          }
+        }
+      }
+
+      // Для обычного селектора (фильтры и т.д.)
+      if (newCol.Selector.allowNull && newCol.Selector.loader === null) {
+        // Проверяем, нет ли уже null (чтобы не дублировать при повторных вызовах, если они будут)
+        if (!newCol.Selector.values.some(v => v.id === null)) {
+          newCol.Selector.values.unshift({
+            id: null,
+            title: newCol.Selector.nullTitle,
+            label: newCol.Selector.nullTitle,
+            position: -1
+          });
+        }
       }
 
       tempColumns.push(newCol);
@@ -200,6 +239,18 @@ export default class FlameTable<T> {
 
           // ключ модели
           const pk = (col.Selector.model).prototype.constructor['primaryKeys'][0];
+
+          // Если разрешён null, добавляем его в начало
+          if (col.Selector.allowNull) {
+            if (!col.Selector.values.some(v => v.id === null)) {
+              col.Selector.values.push({
+                id: null,
+                title: col.Selector.nullTitle,
+                label: col.Selector.nullTitle,
+                position: -1 // Чтобы при сортировке (если будет) он был первым
+              });
+            }
+          }
 
           // Ручные
           if (typeof col.Selector.loader === 'function') {
@@ -356,7 +407,7 @@ export default class FlameTable<T> {
         // Частичное совпадение
         case 'text':
 
-          if (el.valueString.trim() === '') continue;
+          if (el.valueString === null || el.valueString.trim() === '') continue;
           customFilters.where[key] = ['LIKE', key, el.valueString];
 
           break;
@@ -364,7 +415,7 @@ export default class FlameTable<T> {
         // Фуллтекстовый поиск
         case 'fulltext':
 
-          if (el.valueString.trim() === '') continue;
+          if (el.valueString === null || el.valueString.trim() === '') continue;
           customFilters.where[key] = ['FULLTEXT', key, el.valueString];
           break;
 
@@ -372,7 +423,7 @@ export default class FlameTable<T> {
         case 'fixed':
         case 'date':
 
-          if (el.valueString.trim() === '') continue;
+          if (el.valueString === null || el.valueString.trim() === '') continue;
           customFilters.where[key] = el.valueString;
 
           break;
@@ -405,8 +456,10 @@ export default class FlameTable<T> {
             if (el.valueRange.length > 0)
               customFilters.where[key] = ['IN', key, el.valueRange];
           }
-          else
-            customFilters.where[key] = el.valueString;
+          else {
+            if (el.valueString !== "")
+              customFilters.where[key] = el.valueString;
+          }
 
           break;
 
