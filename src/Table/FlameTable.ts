@@ -112,47 +112,8 @@ export default class FlameTable<T> {
       newCol.name = key;
 
       // Загружаем селекторы один раз за страницу
-      if (newCol.Popup.popupType === 'selector') {
-        if (newCol.Popup.Selector.loader !== null) {
-          const loadedValues = newCol.Popup.Selector.loader(newCol) ?? newCol.Popup.Selector.values;
-
-          // Если разрешён null, добавляем его в начало
-          if (newCol.Popup.Selector.allowNull) {
-            if (!loadedValues.some(v => v.id === null)) {
-              loadedValues.unshift({
-                id: null,
-                title: newCol.Popup.Selector.nullTitle,
-                label: newCol.Popup.Selector.nullTitle,
-              });
-            }
-          }
-
-          newCol.Popup.Selector.values = reactive(loadedValues)
-        } else {
-          // Если лоадера нет, но allowNull включен, добавляем null в существующие values
-          if (newCol.Popup.Selector.allowNull) {
-            if (!newCol.Popup.Selector.values.some(v => v.id === null)) {
-              newCol.Popup.Selector.values.unshift({
-                id: null,
-                title: newCol.Popup.Selector.nullTitle,
-                label: newCol.Popup.Selector.nullTitle,
-              });
-            }
-          }
-        }
-      }
-
-      // Для обычного селектора (фильтры и т.д.)
-      if (newCol.Selector.allowNull && newCol.Selector.loader === null) {
-        // Проверяем, нет ли уже null (чтобы не дублировать при повторных вызовах, если они будут)
-        if (!newCol.Selector.values.some(v => v.id === null)) {
-          newCol.Selector.values.unshift({
-            id: null,
-            title: newCol.Selector.nullTitle,
-            label: newCol.Selector.nullTitle,
-            position: -1
-          });
-        }
+      if (newCol.Popup.popupType === 'selector' && newCol.Popup.Selector.loader !== null) {
+        newCol.Popup.Selector.values = reactive(newCol.Popup.Selector.loader(newCol) ?? newCol.Popup.Selector.values)
       }
 
       tempColumns.push(newCol);
@@ -170,6 +131,9 @@ export default class FlameTable<T> {
     // Мержим параметры с базовой версией
     merge(this.opts, opts);
 
+    // Устанавливаем ссылку на таблицу для обратного вызова
+    (this.opts as any)._tableInstance = this;
+
     // TODO: Сортируем колонки, если указан порядок
     //this.columns
 
@@ -177,6 +141,9 @@ export default class FlameTable<T> {
 
     // Предзагружаем колонки
     this.preloadRelated()
+
+    // Инициализируем null-элементы для селекторов
+    this.initSelectorNulls()
 
   }
 
@@ -240,22 +207,11 @@ export default class FlameTable<T> {
           // ключ модели
           const pk = (col.Selector.model).prototype.constructor['primaryKeys'][0];
 
-          // Если разрешён null, добавляем его в начало
-          if (col.Selector.allowNull) {
-            if (!col.Selector.values.some(v => v.id === null)) {
-              col.Selector.values.push({
-                id: null,
-                title: col.Selector.nullTitle,
-                label: col.Selector.nullTitle,
-                position: -1 // Чтобы при сортировке (если будет) он был первым
-              });
-            }
-          }
-
           // Ручные
           if (typeof col.Selector.loader === 'function') {
             col.Selector.values.push(...col.Selector.loader(r.data))
           }
+
 
           // Преобразования не найдено, попытка автоматически определить параметры
           if (col.Selector.loader === null) {
@@ -286,6 +242,59 @@ export default class FlameTable<T> {
     // Начинаем процесс предзагрузки
     await Promise.allSettled(allPreloadPromises);
 
+  }
+
+  /**
+   * Переинициализирует селекторы для указанной колонки
+   */
+  public reinitSelectorForColumn(columnName: string) {
+    if (!this.columns[columnName]) return
+
+    const col = this.columns[columnName]
+
+    // Для popup selector
+    if (col.Popup.popupType === 'selector') {
+      // Удаляем существующий null-элемент если есть
+      col.Popup.Selector.values = col.Popup.Selector.values.filter(v => v.id !== null)
+
+      // Добавляем null только если allowNull = true
+      if (col.Popup.Selector.allowNull) {
+        col.Popup.Selector.values.unshift({
+          id: null,
+          title: col.Popup.Selector.nullTitle,
+          label: col.Popup.Selector.nullTitle,
+        })
+      }
+    }
+
+    // Для обычного селектора (фильтры)
+    if (col.Selector.allowNull) {
+      // Удаляем существующий null-элемент если есть
+      col.Selector.values = col.Selector.values.filter(v => v.id !== null)
+
+      col.Selector.values.unshift({
+        id: null,
+        title: col.Selector.nullTitle,
+        label: col.Selector.nullTitle,
+        position: -1
+      })
+    }
+  }
+
+  /**
+   * Инициализирует null-элементы для всех селекторов, где allowNull = true
+   */
+  private initSelectorNulls() {
+    for (const key in this.columns) {
+      this.reinitSelectorForColumn(key)
+    }
+  }
+
+  /**
+   * Переинициализирует все селекторы (можно вызывать после изменения данных в лоадерах)
+   */
+  public reinitSelectors() {
+    this.initSelectorNulls()
   }
 
   /**
@@ -475,7 +484,7 @@ export default class FlameTable<T> {
 
     // Сперва предобработка
     // TODO: убрать пустой массив т.к. при добавлении он не нужен или прикрепить реактивную модель?
-    if (await this.opts.Popup.beforeAdd({}, this) === false) { return null; }
+    if (await this.opts.Popup.beforeAdd({}, this as any) === false) { return null; }
 
     const cols = await (window as any).REST.prepare(this.getColumnsForUpdate('add'), true);
     const res: SavedObject<T> = await Object.getPrototypeOf(this.model).constructor.create(cols);
@@ -497,7 +506,7 @@ export default class FlameTable<T> {
     const indexKey = tClass.primaryKeys[0];
 
     // Сперва предобработка
-    if (await this.opts.Popup.beforeEdit(columns, this) === false) { return null; }
+    if (await this.opts.Popup.beforeEdit(columns, this as any) === false) { return null; }
 
     // Убираем поля, которые не требуют изменения
     const cleanedCols = this.RemoveUnchagedFields(columns);

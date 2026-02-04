@@ -85,7 +85,7 @@
           <!-- ГОРИЗОНТАЛЬНЫЕ -->
           <div v-if="col.Filter.type === 'selector' && col.Filter.selector.mode === 'horizontal'"
             class="w-full text-center">
-            <div v-for="item in col.Selector.values" :key="item.id" class="px-2 py-1 mx-1 inline-block rounded-[30px]"
+            <div v-for="item in col.Selector.values" :key="item.id?.toString()" class="px-2 py-1 mx-1 inline-block rounded-[30px]"
               :style="'background-color:' + (item.color ?? 'rgb(148,163,184)')">
               {{ item.title }}
             </div>

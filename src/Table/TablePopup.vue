@@ -1,16 +1,6 @@
 <template>
   <v-dialog v-model="isDialogVisible" max-width="777px">
     <v-card>
-      <v-card-title>Тестовый диалог</v-card-title>
-      <v-card-text>
-        Если вы видите это окно, значит, проблема в его содержимом.
-      </v-card-text>
-      <v-card-actions>
-        <v-btn color="grey" variant="text" @click="close">
-          Закрыть
-        </v-btn>
-      </v-card-actions>
-      <!--
       <slot name="header" />
 
       <v-card-text>
@@ -77,7 +67,7 @@
                     fill="#0F172A" />
                 </svg>
 
-                <input class="hidden" :name="'cfile_' + column" type="file" @change="fileUpdated(column, $event)">
+                <input class="hidden" :id="'cfile_' + column" :name="'cfile_' + column" type="file" @change="fileUpdated(column, $event)">
 
               </label>
             </div>
@@ -105,7 +95,7 @@
                     fill="#0F172A" />
                 </svg>
 
-                <input class="hidden" :name="'cfile_' + column" type="file" @change="fileUpdated(column, $event)">
+                <input class="hidden" :id="'cfile_' + column" :name="'cfile_' + column" type="file" @change="fileUpdated(column, $event)">
 
               </label>
             </div>
@@ -142,7 +132,6 @@
           {{ Table.mode === 'add' ? 'Добавить' : 'Сохранить' }}
         </v-btn>
       </v-card-actions>
-      -->
     </v-card>
   </v-dialog>
 </template>
@@ -213,7 +202,7 @@ export default defineComponent({
     const showEdit = async (row: any) => {
       Table.mode = 'edit';
 
-      await Table.opts.Popup.load(row, Table);
+      await Table.opts.Popup.load(row, Table as any);
 
 
       // Установим все поля в фактические значения из таблицы

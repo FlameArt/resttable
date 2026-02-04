@@ -76,6 +76,11 @@ export default class TableOpts {
     // TODO: ЕСТЬ ОШИБКА???
     if (this.columnsOpts[ColumnName] === undefined) this.columnsOpts[ColumnName] = new Column as any
     merge(this.columnsOpts[ColumnName], mergingOpts)
+
+    // Если у нас есть ссылка на таблицу, переинициализируем селектор для этой колонки
+    if ((this as any)._tableInstance) {
+      (this as any)._tableInstance.reinitSelectorForColumn(ColumnName)
+    }
   }
 
   /**
