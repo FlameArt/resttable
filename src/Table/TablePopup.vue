@@ -136,10 +136,9 @@
   </v-dialog>
 </template>
 <script lang="ts">
-import { onMounted, reactive, ref, watch, nextTick } from '@vue/runtime-core'; import type { Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST, { Rows } from "flamerest"
+import { onMounted, reactive, ref, watch, nextTick } from 'vue'; import type { Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST, { Rows } from "flamerest"
 
 // Иконки
-import { computed } from '@vue/reactivity';
 import { Column, IColumn } from './Columns';
 import { defineComponent } from 'vue';
 

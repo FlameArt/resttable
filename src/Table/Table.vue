@@ -123,10 +123,9 @@
 </template>
 
 <script lang="ts">
-import { onMounted, reactive, ref } from '@vue/runtime-core'; import type { Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST, { Rows } from "flamerest"
+import { onMounted, reactive, ref } from 'vue'; import type { Ref } from 'vue'; import { storeFile } from "@/store"; import { useRoute, useRouter } from 'vue-router'; import REST, { Rows } from "flamerest"
 
 // Иконки
-import { computed } from '@vue/reactivity';
 import { Column, IColumn } from './Columns';
 import { defineComponent } from 'vue';
 
@@ -178,6 +177,17 @@ export default defineComponent({
      * Редактирование записи
      */
     const edit = async (row: any) => {
+      // TODO OPTIMIZATION NOTE: Логирование для отладки открытия попапа редактирования
+      console.log('[FlameTable Debug] edit method called', {
+        popupInstance: FlameTablePopup.value,
+        rowData: row,
+        hasShowEdit: typeof FlameTablePopup.value?.showEdit === 'function'
+      });
+
+      if (!FlameTablePopup.value) {
+        console.error('[FlameTable Debug] FlameTablePopup ref is NULL. Убедитесь, что TablePopup примонтирован и ref="FlameTablePopup" указан верно.');
+      }
+
       FlameTablePopup.value?.showEdit(row);
     }
 
