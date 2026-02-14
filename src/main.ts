@@ -6,14 +6,15 @@ import router from "./router";
 
 import REST from 'flamerest';
 import vSelect from 'vue-select'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
 
-import { vuetifyProTipTap } from './components/editor/TextEditor'
 
 import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 import 'vuetify/styles';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
+
+import { vuetifyProTipTap } from './components/editor/TextEditor'
 
 
 REST.SERVER = 'http://testrest';
