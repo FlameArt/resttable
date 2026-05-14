@@ -135,7 +135,7 @@ import Paginator from './Paginator.vue';
 import TableFilters from './TableFilters.vue';
 type Class<T> = new (...args: any[]) => T;
 
-import Datepicker from '@vuepic/vue-datepicker';
+import { VueDatePicker as Datepicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { isNumber } from 'lodash';
 import TableTasksPanel from './TableTasksPanel.vue';

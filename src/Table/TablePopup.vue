@@ -147,7 +147,7 @@ import FlameTable from './FlameTable';
 
 type Class<T> = new (...args: any[]) => T;
 
-import Datepicker from '@vuepic/vue-datepicker';
+import { VueDatePicker as Datepicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { isNumber } from 'lodash';
 import EditorPopup from '../components/editor/EditorPopup.vue';

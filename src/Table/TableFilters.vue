@@ -116,7 +116,7 @@ import TableOpts from './TableOpts';
 import { Column, IColumn } from './Columns';
 //import { TableFilter } from './TableOpts.js';
 import FlameTable from './FlameTable';
-import Datepicker from '@vuepic/vue-datepicker';
+import { VueDatePicker as Datepicker } from '@vuepic/vue-datepicker';
 // import vSelect from 'vue-select' // Больше не используется
 import ITableSelectorItem from './TableSelectorItem';
 import { useDisplay } from 'vuetify';
