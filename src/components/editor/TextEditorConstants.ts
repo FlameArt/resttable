@@ -1,4 +1,7 @@
-import type { NodeTypeMenu } from 'vuetify-pro-tiptap/extensions/components/bubble'
+import type { ExtensionNameKeys } from 'vuetify-pro-tiptap'
+
+export type NodeTypeKey = 'table' | 'image' | 'text' | 'link' | 'video'
+export type NodeTypeMenu = Partial<Record<NodeTypeKey, (ExtensionNameKeys | 'divider' | string)[]>>
 
 export const DEFAULT_LANG_VALUE = 'en' as const
 
